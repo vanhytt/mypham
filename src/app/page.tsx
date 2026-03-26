@@ -158,6 +158,36 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwrJuxPHtT0z1atVMDhh-tY3Cys7cRyV50-G2H1zzlYlmtjr8Mzp6agfEbnKGbOIEH4/exec';
+  const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.phone) return;
+    
+    setIsSubmitting(true);
+    setSubmitSuccess(false);
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      setSubmitSuccess(true);
+      setFormData({ name: "", phone: "", email: "" });
+    } catch (error) {
+      console.error("Lỗi gửi form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -541,30 +571,56 @@ export default function Home() {
               </div>
 
               <div className="w-full lg:w-1/2">
-                <form className="flex flex-col space-y-4" onSubmit={(e) => e.preventDefault()}>
+                <form className="flex flex-col space-y-4" onSubmit={handleFormSubmit}>
                   {[
-                    { id: "name", label: "Họ tên *", type: "text", placeholder: "Nhập họ và tên của bạn" },
-                    { id: "phone", label: "Số điện thoại *", type: "tel", placeholder: "Nhập số điện thoại" },
-                    { id: "email", label: "Email", type: "email", placeholder: "Nhập địa chỉ email" },
+                    { id: "name", key: "name", label: "Họ tên *", type: "text", placeholder: "Nhập họ và tên của bạn", required: true },
+                    { id: "phone", key: "phone", label: "Số điện thoại *", type: "tel", placeholder: "Nhập số điện thoại", required: true },
+                    { id: "email", key: "email", label: "Email", type: "email", placeholder: "Nhập địa chỉ email", required: false },
                   ].map((f) => (
                     <div key={f.id} className="flex flex-col space-y-1.5">
                       <label htmlFor={f.id} className="text-sm font-medium text-[#59534d]">{f.label}</label>
                       <input
                         type={f.type}
                         id={f.id}
+                        required={f.required}
+                        value={formData[f.key as keyof typeof formData]}
+                        onChange={(e) => setFormData({ ...formData, [f.key]: e.target.value })}
+                        disabled={isSubmitting}
                         placeholder={f.placeholder}
-                        className="w-full px-5 py-4 bg-white border border-[#e5dfd4] focus:border-[#9b8d7a] rounded-xl outline-none transition-colors text-[#3b352e] placeholder:text-[#c1b8af] shadow-sm"
+                        className="w-full px-5 py-4 bg-white border border-[#e5dfd4] focus:border-[#9b8d7a] rounded-xl outline-none transition-colors text-[#3b352e] placeholder:text-[#c1b8af] shadow-sm disabled:opacity-50"
                       />
                     </div>
                   ))}
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                     type="submit"
-                    className="w-full mt-2 bg-[#3b352e] text-white py-4 rounded-xl font-medium tracking-wide hover:bg-[#59534d] transition-colors shadow-md"
+                    disabled={isSubmitting}
+                    className="w-full mt-2 bg-[#3b352e] text-white py-4 rounded-xl font-medium tracking-wide hover:bg-[#59534d] transition-colors shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Đăng Ký Ngay
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="animate-spin" size={18} />
+                        Đang gửi...
+                      </>
+                    ) : (
+                      "Đang Ký Ngay"
+                    )}
                   </motion.button>
+                  
+                  {/* Success Message */}
+                  <AnimatePresence>
+                    {submitSuccess && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl text-center text-sm mt-4 font-medium"
+                      >
+                        Gửi thông tin thành công! Chúng tôi sẽ liên hệ lại sớm nhất.
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </form>
               </div>
             </div>

@@ -27,6 +27,7 @@ export default function ProductListingPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const [selectedCategory, setSelectedCategory] = useState<string>("Tất cả");
   const [selectedPriceRange, setSelectedPriceRange] = useState<number>(0);
@@ -316,6 +317,7 @@ export default function ProductListingPage() {
                       </span>
 
                       <button
+                        onClick={() => setSelectedProduct(product)}
                         className="flex items-center gap-1.5 bg-[#3b352e] text-white text-xs uppercase tracking-widest px-4 py-2 rounded-full hover:bg-[#59534d] transition-colors duration-300 font-medium shadow-sm active:scale-95"
                       >
                         Chi tiết
@@ -342,6 +344,104 @@ export default function ProductListingPage() {
           )}
         </div>
       </div>
+
+      {/* ─── PRODUCT DETAIL MODAL ─────────────────────────────── */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-8"
+          >
+            {/* Overlay */}
+            <div
+              className="absolute inset-0 bg-[#3b352e]/60 backdrop-blur-sm"
+              onClick={() => setSelectedProduct(null)}
+            />
+
+            {/* Modal Box — column on mobile, row on md+ */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.93, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.93, y: 24 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="relative z-10 bg-[#F9F6F2] rounded-[1.5rem] shadow-2xl shadow-[#3b352e]/25 max-w-4xl w-full max-h-[92vh] overflow-hidden flex flex-col md:flex-row"
+            >
+              {/* Close Button — larger for tap */}
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="absolute top-4 right-4 z-20 w-11 h-11 bg-white/95 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform"
+              >
+                <X size={20} className="text-[#3b352e]" />
+              </button>
+
+              {/* Image — 260px tall on mobile, full-height on md+ */}
+              <div className="w-full md:w-[42%] shrink-0 bg-gradient-to-br from-[#ede4d8] to-[#F9F6F2] overflow-hidden">
+                <div className="h-[260px] md:h-full">
+                  {selectedProduct.anh_url ? (
+                    <img
+                      src={selectedProduct.anh_url}
+                      alt={selectedProduct.ten_sp}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Leaf size={48} className="text-[#c1b8af]" />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Info panel — scrollable content + pinned CTA */}
+              <div className="flex flex-col flex-1 overflow-hidden">
+                {/* Scrollable text area */}
+                <div className="flex-1 overflow-y-auto p-6 md:p-8 lg:p-10">
+                  {selectedProduct.danh_muc && (
+                    <span className="text-[10px] uppercase tracking-[0.25em] text-[#9b8d7a] font-medium mb-3 block">
+                      {selectedProduct.danh_muc}
+                    </span>
+                  )}
+
+                  <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-[#2d2924] font-semibold leading-tight mb-3">
+                    {selectedProduct.ten_sp}
+                  </h2>
+
+                  <div className="text-xl md:text-2xl font-bold text-[#3b352e] mb-5 tracking-tight">
+                    {Number(selectedProduct.gia).toLocaleString('vi-VN')}
+                    <span className="text-base font-medium text-[#9b8d7a] ml-1">đ</span>
+                  </div>
+
+                  {selectedProduct.mo_ta && (
+                    <div>
+                      <h4 className="text-xs uppercase tracking-widest text-[#9b8d7a] font-medium mb-3">Mô tả</h4>
+                      <p className="text-[#59534d] text-sm md:text-base leading-relaxed">{selectedProduct.mo_ta}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Pinned CTA buttons */}
+                <div className="shrink-0 p-5 md:p-6 border-t border-[#e5dfd4] bg-[#F9F6F2] flex gap-3">
+                  <Link
+                    href="/#Hệ thống"
+                    onClick={() => setSelectedProduct(null)}
+                    className="flex-1 text-center py-3.5 px-4 bg-[#3b352e] text-white rounded-2xl font-medium uppercase tracking-widest text-xs md:text-sm hover:bg-[#59534d] transition-colors shadow-md"
+                  >
+                    Liên hệ tư vấn
+                  </Link>
+                  <button
+                    onClick={() => setSelectedProduct(null)}
+                    className="flex-1 sm:flex-none py-4 px-6 border border-[#d4cbbd] text-[#59534d] rounded-2xl font-medium text-sm hover:border-[#9b8d7a] hover:text-[#3b352e] transition-colors"
+                  >
+                    Đóng
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
