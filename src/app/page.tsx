@@ -200,11 +200,11 @@ export default function Home() {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="md:hidden bg-white/90 backdrop-blur-xl border-t border-[#e5dfd4] overflow-hidden"
+              initial={{ opacity: 0, scaleY: 0.95, y: -10 }}
+              animate={{ opacity: 1, scaleY: 1, y: 0 }}
+              exit={{ opacity: 0, scaleY: 0.95, y: -10 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-t border-[#e5dfd4] origin-top shadow-xl"
             >
               <div className="flex flex-col items-center py-8 space-y-6">
                 {navItems.map((item) => (
