@@ -97,8 +97,19 @@ function NavItem({ item }: { item: (typeof navItems)[0] }) {
   );
 }
 
+interface Product {
+  id?: string | number;
+  "Tên"?: string;
+  name?: string;
+  "Giá Tiền"?: string | number;
+  "URL hình ảnh"?: string;
+  image_url?: string;
+  description?: string;
+  category?: string;
+}
+
 export default function Home() {
-  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -140,11 +151,10 @@ export default function Home() {
 
       {/* ─── NAVBAR ──────────────────────────────────────────────── */}
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          isScrolled
-            ? "bg-[#F9F6F2]/90 backdrop-blur-md shadow-sm py-4"
-            : "bg-transparent py-6"
-        }`}
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled
+          ? "bg-[#F9F6F2]/90 backdrop-blur-md shadow-sm py-4"
+          : "bg-transparent py-6"
+          }`}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-24 flex items-center justify-between">
           {/* Logo */}
@@ -358,18 +368,19 @@ export default function Home() {
         </section>
 
         {/* ─── FEATURED PRODUCTS ─────────────────────────────────── */}
-        <section className="w-full px-6 py-24 bg-white" id="Sản phẩm">
-          <div className="max-w-7xl mx-auto text-center">
+        <section className="w-full px-6 py-28 bg-[#F9F6F2]" id="Sản phẩm">
+          <div className="max-w-6xl mx-auto">
+            {/* Section header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="flex flex-col items-center justify-center mb-16"
+              className="flex flex-col items-center justify-center mb-16 text-center"
             >
-              <span className="text-xs uppercase tracking-[0.2em] text-[#9b8d7a] font-medium mb-4 flex items-center gap-3">
+              <span className="text-xs uppercase tracking-[0.25em] text-[#9b8d7a] font-medium mb-4 flex items-center gap-3">
                 <span className="w-6 h-px bg-[#9b8d7a]" /> Mới Nhất Mùa Này <span className="w-6 h-px bg-[#9b8d7a]" />
               </span>
-              <h2 className="text-4xl font-serif text-[#3b352e] tracking-tight">Gợi Ý Cho Bạn</h2>
+              <h2 className="text-4xl lg:text-5xl font-serif text-[#3b352e] tracking-tight">Gợi Ý Cho Bạn</h2>
             </motion.div>
 
             {loading ? (
@@ -377,44 +388,80 @@ export default function Home() {
                 <Loader2 className="animate-spin text-[#9b8d7a]" size={40} />
               </div>
             ) : featuredDisplayProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {featuredDisplayProducts.map((product, idx) => (
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: idx * 0.12 }}
+                    transition={{ delay: idx * 0.1, duration: 0.6 }}
+                    whileHover={{ y: -6, transition: { duration: 0.3 } }}
                     key={product.id || idx}
-                    className="group flex flex-col items-center"
+                    className="group relative bg-white rounded-3xl overflow-hidden shadow-[0_4px_24px_rgba(59,53,46,0.07)] hover:shadow-[0_12px_40px_rgba(59,53,46,0.14)] transition-shadow duration-500 cursor-pointer flex flex-col"
                   >
-                    <div className="w-full aspect-square rounded-2xl overflow-hidden mb-6 relative bg-[#F9F6F2]">
-                      <img
-                        src={product['URL hình ảnh'] || product.image_url}
-                        alt={product['Tên'] || product.name}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-500" />
+                    {/* Image container */}
+                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-gradient-to-br from-[#F9F6F2] to-[#ede4d8]">
+                      {(product['URL hình ảnh'] || product.image_url) ? (
+                        <img
+                          src={product['URL hình ảnh'] || product.image_url}
+                          alt={product['Tên'] || product.name || 'Sản phẩm'}
+                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
+                        />
+                      ) : (
+                        /* Styled placeholder when no image */
+                        <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+                          <div className="w-20 h-20 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-inner">
+                            <Leaf size={28} className="text-[#9b8d7a]" />
+                          </div>
+                          <p className="text-xs text-[#bab0a4] uppercase tracking-widest">Hình ảnh sắp ra mắt</p>
+                        </div>
+                      )}
+
+                      {/* Overlay gradient on image */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent group-hover:from-black/5 transition-all duration-500" />
+
+                      {/* Glassmorphism badge top-left */}
+                      <div className="absolute top-4 left-4 bg-white/70 backdrop-blur-md border border-white/50 rounded-full px-3 py-1 flex items-center gap-1.5 shadow-sm">
+                        <span className="text-[#c9a96e] text-[10px]">★</span>
+                        <span className="text-[10px] uppercase tracking-wider text-[#6b6056] font-medium">New Arrival</span>
+                      </div>
                     </div>
 
-                    <div className="space-y-2 mb-6 text-center">
-                      <h2 className="text-xl text-[#3b352e] font-serif font-medium">{product['Tên'] || product.name}</h2>
+                    {/* Card body */}
+                    <div className="flex flex-col flex-1 p-6">
+                      {/* Name */}
+                      <h3 className="font-serif text-xl text-[#2d2924] font-semibold leading-snug mb-1.5 group-hover:text-[#59534d] transition-colors duration-300">
+                        {product['Tên'] || product.name || 'Sản phẩm'}
+                      </h3>
+
+                      {/* Description */}
                       {product['description'] && (
-                        <p className="text-sm text-[#8c8273] font-light line-clamp-2 max-w-[250px] mx-auto">
+                        <p className="text-sm text-[#9b8d7a] font-light line-clamp-2 leading-relaxed mb-3">
                           {product['description']}
                         </p>
                       )}
-                      <p className="text-lg text-[#9b8d7a] font-medium">
-                        {product['Giá Tiền'] ? Number(product['Giá Tiền']).toLocaleString('vi-VN') + " đ" : "Liên hệ"}
-                      </p>
-                    </div>
 
-                    <motion.button
-                      whileHover={{ scale: 1.04 }}
-                      whileTap={{ scale: 0.96 }}
-                      className="px-8 py-3 bg-white border border-[#3b352e] text-[#3b352e] rounded-full hover:bg-[#3b352e] hover:text-white transition-all duration-300 font-medium tracking-wide text-sm"
-                    >
-                      Xem chi tiết
-                    </motion.button>
+                      {/* Spacer */}
+                      <div className="flex-1" />
+
+                      {/* Price + CTA row */}
+                      <div className="flex items-center justify-between pt-4 border-t border-[#f0ebe4] mt-4">
+                        <span className="text-base font-semibold text-[#3b352e] tracking-tight">
+                          {product['Giá Tiền']
+                            ? Number(product['Giá Tiền']).toLocaleString('vi-VN') + ' đ'
+                            : 'Liên hệ'}
+                        </span>
+
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="flex items-center gap-1.5 bg-[#3b352e] text-white text-xs uppercase tracking-widest px-5 py-2.5 rounded-full hover:bg-[#59534d] transition-colors duration-300 font-medium shadow-sm"
+                        >
+                          Chi tiết
+                          <ArrowRight size={12} />
+                        </motion.button>
+                      </div>
+                    </div>
                   </motion.div>
                 ))}
               </div>
