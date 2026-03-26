@@ -8,6 +8,7 @@ const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfa
 export const metadata: Metadata = {
   title: "Cosmetics Brand",
   description: "Đánh thức vẻ đẹp tự nhiên của bạn",
+  referrer: "no-referrer",
 };
 
 export default function RootLayout({

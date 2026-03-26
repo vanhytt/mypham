@@ -5,25 +5,36 @@ import { useState, useEffect, useRef } from "react";
 import { Leaf, Heart, ShieldCheck, ArrowRight, Menu, X, Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
+import Link from "next/link";
+
 const navItems = [
   {
     label: "Trang chủ",
-    href: "#",
+    href: "/",
     dropdown: null,
   },
   {
     label: "Sản phẩm",
-    href: "#Sản phẩm",
-    dropdown: ["Chăm sóc da", "Trang điểm", "Nước hoa", "Bộ quà tặng"],
+    href: "/san-pham",
+    dropdown: [
+      { label: "Chăm sóc da", href: "/san-pham" },
+      { label: "Trang điểm", href: "/san-pham" },
+      { label: "Nước hoa", href: "/san-pham" },
+      { label: "Bộ quà tặng", href: "/san-pham" },
+    ],
   },
   {
     label: "Về chúng tôi",
-    href: "#Về chúng tôi",
-    dropdown: ["Câu chuyện thương hiệu", "Triết lý", "Thành phần tự nhiên"],
+    href: "/#Về chúng tôi",
+    dropdown: [
+      { label: "Câu chuyện thương hiệu", href: "/#Về chúng tôi" },
+      { label: "Triết lý", href: "/#Về chúng tôi" },
+      { label: "Thành phần tự nhiên", href: "/#Về chúng tôi" },
+    ],
   },
   {
     label: "Hệ thống",
-    href: "#Hệ thống",
+    href: "/#Hệ thống",
     dropdown: null,
   },
 ];
@@ -49,7 +60,7 @@ function NavItem({ item }: { item: (typeof navItems)[0] }) {
       onMouseEnter={() => item.dropdown && setOpen(true)}
       onMouseLeave={() => item.dropdown && setOpen(false)}
     >
-      <a
+      <Link
         href={item.href}
         className="relative flex items-center gap-1 text-[#59534d] hover:text-[#3b352e] text-sm uppercase tracking-widest font-medium transition-colors duration-200 pb-1"
       >
@@ -64,7 +75,7 @@ function NavItem({ item }: { item: (typeof navItems)[0] }) {
         )}
         {/* Animated underline */}
         <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1.5px] bg-[#9b8d7a] w-0 group-hover:w-full transition-all duration-300 ease-out" />
-      </a>
+      </Link>
 
       {/* Dropdown */}
       <AnimatePresence>
@@ -77,15 +88,15 @@ function NavItem({ item }: { item: (typeof navItems)[0] }) {
             className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-52 z-50"
           >
             {/* Glassmorphism card */}
-            <div className="bg-white/80 backdrop-blur-xl border border-white/50 rounded-2xl shadow-xl shadow-[#9b8d7a]/10 overflow-hidden py-2">
+            <div className="bg-white/80 backdrop-blur-xl border border-white/50 rounded-2xl shadow-xl shadow-[#9b8d7a]/10 overflow-hidden py-2 flex flex-col">
               {item.dropdown.map((sub) => (
-                <a
-                  key={sub}
-                  href="#"
+                <Link
+                  key={sub.label}
+                  href={sub.href}
                   className="block px-5 py-2.5 text-[#59534d] hover:text-[#3b352e] hover:bg-[#F9F6F2] text-sm transition-colors duration-150 tracking-wide"
                 >
-                  {sub}
-                </a>
+                  {sub.label}
+                </Link>
               ))}
             </div>
             {/* Arrow pointer */}
@@ -99,13 +110,10 @@ function NavItem({ item }: { item: (typeof navItems)[0] }) {
 
 interface Product {
   id?: string | number;
-  "Tên"?: string;
-  name?: string;
-  "Giá Tiền"?: string | number;
-  "URL hình ảnh"?: string;
+  Name?: string;
+  gia?: number;
   image_url?: string;
-  description?: string;
-  category?: string;
+  mo_ta?: string;
 }
 
 export default function Home() {
@@ -113,11 +121,21 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchProducts() {
+      if (!supabase) {
+        console.error("Chưa cấu hình biến môi trường Supabase!");
+        setErrorMsg("Chưa cấu hình biến môi trường Supabase!");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
+        setErrorMsg(null);
+        
         const { data, error } = await supabase
           .from("Sản phẩm")
           .select("*")
@@ -126,11 +144,13 @@ export default function Home() {
         console.log("Supabase Data fetched:", data);
         if (error) {
           console.error("Error fetching products from 'Sản phẩm':", error);
+          setErrorMsg("Lỗi kết nối Database");
         } else if (data) {
           setAllProducts(data);
         }
       } catch (err) {
         console.error("Unexpected error:", err);
+        setErrorMsg("Lỗi kết nối Database");
       } finally {
         setLoading(false);
       }
@@ -208,14 +228,14 @@ export default function Home() {
             >
               <div className="flex flex-col items-center py-8 space-y-6">
                 {navItems.map((item) => (
-                  <a
+                  <Link
                     key={item.label}
                     href={item.href}
                     className="text-[#59534d] hover:text-[#3b352e] text-base uppercase tracking-widest font-medium transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </motion.div>
@@ -320,12 +340,12 @@ export default function Home() {
 
               {/* Floating image wrapper */}
               <div
-                className="relative z-10 w-full max-w-[420px] aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-[#3b352e]/15 lg:animate-float"
+                className="relative z-10 w-full max-w-[420px] aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-[#3b352e]/15 lg:animate-float bg-gradient-to-t from-[#e8ddd0]/40 to-transparent"
               >
                 <img
-                  src="https://images.unsplash.com/photo-1596462502278-27bf850338dd?q=80&w=1200&auto=format&fit=crop"
+                  src="/products/meo1.png"
                   alt="Người mẫu mỹ phẩm tự nhiên"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain p-4"
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3b352e]/20 via-transparent to-transparent" />
@@ -379,6 +399,10 @@ export default function Home() {
               <div className="flex justify-center py-20">
                 <Loader2 className="animate-spin text-[#9b8d7a]" size={40} />
               </div>
+            ) : errorMsg ? (
+              <div className="text-center py-20">
+                <p className="text-red-500 font-serif italic text-lg">{errorMsg}</p>
+              </div>
             ) : featuredDisplayProducts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {featuredDisplayProducts.map((product, idx) => (
@@ -392,11 +416,12 @@ export default function Home() {
                     className="group relative bg-white rounded-3xl overflow-hidden shadow-[0_4px_24px_rgba(59,53,46,0.07)] hover:shadow-[0_12px_40px_rgba(59,53,46,0.14)] transition-shadow duration-500 cursor-pointer flex flex-col"
                   >
                     {/* Image container */}
-                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-gradient-to-br from-[#F9F6F2] to-[#ede4d8]">
-                      {(product['URL hình ảnh'] || product.image_url) ? (
+                    <div className="relative w-full aspect-[4/5] overflow-hidden bg-gradient-to-br from-[#F9F6F2] to-[#ede4d8]">
+                      {product.image_url ? (
                         <img
-                          src={product['URL hình ảnh'] || product.image_url}
-                          alt={product['Tên'] || product.name || 'Sản phẩm'}
+                          src={product.image_url}
+                          alt={product.Name || 'Sản phẩm'}
+                          referrerPolicy="no-referrer"
                           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
                         />
                       ) : (
@@ -423,13 +448,13 @@ export default function Home() {
                     <div className="flex flex-col flex-1 p-6">
                       {/* Name */}
                       <h3 className="font-serif text-xl text-[#2d2924] font-semibold leading-snug mb-1.5 group-hover:text-[#59534d] transition-colors duration-300">
-                        {product['Tên'] || product.name || 'Sản phẩm'}
+                        {product.Name || 'Sản phẩm'}
                       </h3>
 
                       {/* Description */}
-                      {product['description'] && (
+                      {product.mo_ta && (
                         <p className="text-sm text-[#9b8d7a] font-light line-clamp-2 leading-relaxed mb-3">
-                          {product['description']}
+                          {product.mo_ta}
                         </p>
                       )}
 
@@ -439,8 +464,8 @@ export default function Home() {
                       {/* Price + CTA row */}
                       <div className="flex items-center justify-between pt-4 border-t border-[#f0ebe4] mt-4">
                         <span className="text-base font-semibold text-[#3b352e] tracking-tight">
-                          {product['Giá Tiền']
-                            ? Number(product['Giá Tiền']).toLocaleString('vi-VN') + ' đ'
+                          {product.gia
+                            ? Number(product.gia).toLocaleString('vi-VN') + ' đ'
                             : 'Liên hệ'}
                         </span>
 
