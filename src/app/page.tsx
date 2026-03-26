@@ -311,20 +311,16 @@ export default function Home() {
             </motion.div>
 
             {/* Right: Floating Image */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.93, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 1.1, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="relative flex items-center justify-center"
+            <div
+              className="relative flex items-center justify-center lg:animate-fade-in-up"
+              style={{ animationDelay: '150ms' }}
             >
               {/* Decorative circle */}
               <div className="absolute w-[440px] h-[440px] rounded-full bg-gradient-to-br from-[#e8ddd0] to-[#F9F6F2] lg:block hidden" />
 
               {/* Floating image wrapper */}
-              <motion.div
-                animate={{ y: [0, -16, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-10 w-full max-w-[420px] aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-[#3b352e]/15"
+              <div
+                className="relative z-10 w-full max-w-[420px] aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-[#3b352e]/15 lg:animate-float"
               >
                 <img
                   src="https://images.unsplash.com/photo-1596462502278-27bf850338dd?q=80&w=1200&auto=format&fit=crop"
@@ -333,26 +329,22 @@ export default function Home() {
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3b352e]/20 via-transparent to-transparent" />
-              </motion.div>
+              </div>
 
-              {/* Floating product badge */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
-                className="absolute -bottom-4 -left-4 lg:-bottom-6 lg:-left-10 z-20 bg-white/90 backdrop-blur-md rounded-2xl px-5 py-4 shadow-xl shadow-[#9b8d7a]/20 border border-white/60"
+              {/* Bottom product badge */}
+              <div
+                className="absolute -bottom-4 -left-4 lg:-bottom-6 lg:-left-10 z-20 bg-white/90 backdrop-blur-md rounded-2xl px-5 py-4 shadow-xl shadow-[#9b8d7a]/20 border border-white/60 lg:animate-fade-in-right"
+                style={{ animationDelay: '800ms' }}
               >
                 <p className="text-[10px] uppercase tracking-widest text-[#9b8d7a] mb-1">Best Seller</p>
                 <p className="text-sm font-serif text-[#3b352e] font-medium">Serum Phục Hồi</p>
                 <p className="text-xs text-[#8c8273]">950.000 đ</p>
-              </motion.div>
+              </div>
 
               {/* Top badge */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1, duration: 0.6 }}
-                className="absolute top-8 -right-4 lg:-right-8 z-20 bg-white/90 backdrop-blur-md rounded-2xl px-4 py-3 shadow-xl shadow-[#9b8d7a]/20 border border-white/60 flex items-center gap-3"
+              <div
+                className="absolute top-8 -right-4 lg:-right-8 z-20 bg-white/90 backdrop-blur-md rounded-2xl px-4 py-3 shadow-xl shadow-[#9b8d7a]/20 border border-white/60 flex items-center gap-3 lg:animate-fade-in-left"
+                style={{ animationDelay: '1000ms' }}
               >
                 <div className="w-8 h-8 rounded-full bg-[#F9F6F2] flex items-center justify-center text-[#9b8d7a]">
                   <Leaf size={14} />
@@ -361,8 +353,8 @@ export default function Home() {
                   <p className="text-[10px] uppercase tracking-widest text-[#9b8d7a]">Thành phần</p>
                   <p className="text-xs font-medium text-[#3b352e]">100% Thiên nhiên</p>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
 
           </div>
         </section>
