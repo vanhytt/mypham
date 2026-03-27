@@ -3,11 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --background: #F9F6F2;
-  --foreground: #3b352e;
+  --foreground: #1A365D;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 15% 55%,  #E0E7FF 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 15%,  #FCE7F3 0%, transparent 55%),
+    radial-gradient(ellipse at 65% 80%,  #D1E9FF 0%, transparent 55%),
+    radial-gradient(ellipse at 38% 10%,  #F3E8FF 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 70%,  #FDE8F0 0%, transparent 50%),
+    #EEF2FF;
+  background-attachment: fixed;
 }

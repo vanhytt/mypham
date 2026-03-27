@@ -18,7 +18,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} font-sans bg-[#F9F6F2] antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+        {/* Watermark logo chìm — cố định, tràn góc trên phải */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'fixed',
+            top: '-20%',
+            right: '-20%',
+            width: '170vw',
+            height: '170vw',
+            backgroundImage: "url('/logo.png')",
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'contain',
+            backgroundPosition: 'top right',
+            filter: 'brightness(100)',
+            opacity: 0.05,
+            mixBlendMode: 'overlay' as const,
+            zIndex: 0,
+          }}
+        />
         {children}
       </body>
     </html>
