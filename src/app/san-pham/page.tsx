@@ -8,7 +8,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation, Thumbs } from 'swiper/modules';
-import type { Swiper as SwiperType } from 'swiper';
+import type { Swiper as SwiperClass } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -39,7 +39,7 @@ export default function ProductListingPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("Tất cả");
   const [selectedPriceRange, setSelectedPriceRange] = useState<number>(0);
@@ -451,12 +451,15 @@ export default function ProductListingPage() {
                     ].filter(Boolean) as string[];
 
                     const renderImage = (src: string, index: number) => (
-                      <img
-                        key={index}
-                        src={src}
-                        alt={`${selectedProduct.ten_sp} view ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
+                      <div className="relative w-full h-full">
+                        <Image
+                          key={index}
+                          src={src}
+                          alt={`${selectedProduct.ten_sp} view ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     );
 
                     if (imgs.length === 0) {
@@ -545,7 +548,9 @@ export default function ProductListingPage() {
                       >
                         {imgs.map((src, i) => (
                           <SwiperSlide key={`thumb-${i}`}>
-                            <img src={src} alt="Thumb" />
+                            <div className="relative w-full h-full">
+                              <Image src={src} alt="Thumb" fill className="object-cover" />
+                            </div>
                           </SwiperSlide>
                         ))}
                       </Swiper>
@@ -594,7 +599,9 @@ export default function ProductListingPage() {
                             <div className="flex"><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /></div>
                           </div>
                         </div>
-                        <p className="text-[#2B547E] text-sm leading-relaxed px-1">"Sản phẩm dùng rất mướt, kết cấu nhẹ không gây bết rít. Mùi thơm nhẹ nhàng cực ưng."</p>
+                        <p className="text-[#2B547E] text-sm leading-relaxed px-1">
+                          {"\"Sản phẩm dùng rất mướt, kết cấu nhẹ không gây bết rít. Mùi thơm nhẹ nhàng cực ưng.\""}
+                        </p>
                       </div>
                     </div>
 

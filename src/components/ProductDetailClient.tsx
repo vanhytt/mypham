@@ -6,6 +6,8 @@ import { Leaf, Star, CircleUser, ArrowLeft, ShieldCheck, Heart, Loader2 } from "
 import Link from "next/link";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation, Thumbs } from 'swiper/modules';
+import type { Swiper as SwiperClass } from 'swiper';
+import Image from "next/image";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -28,7 +30,7 @@ interface Product {
 }
 
 export default function ProductDetailClient({ product }: { product: Product }) {
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   const [reviewText, setReviewText] = useState("");
   const [reviewName, setReviewName] = useState("");
   const [reviewSuccess, setReviewSuccess] = useState(false);
@@ -76,10 +78,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
   const renderImage = (src: string, index: number) => (
     <div className="relative w-full h-full group overflow-hidden">
-      <img
+      <Image
         src={src}
         alt={`${name} - View ${index + 1}`}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        fill
+        className="object-cover transition-transform duration-700 group-hover:scale-110"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
@@ -161,7 +164,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 >
                   {imgs.map((src, i) => (
                     <SwiperSlide key={i}>
-                      <img src={src} alt="Thumbnail view" />
+                      <div className="relative w-full h-full">
+                        <Image src={src} alt="Thumbnail view" fill className="object-cover" />
+                      </div>
                     </SwiperSlide>
                   ))}
                 </Swiper>
