@@ -2,10 +2,18 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { Leaf, Heart, ShieldCheck, ArrowRight, Menu, X, Loader2, ChevronDown } from "lucide-react";
+import { Leaf, Heart, ShieldCheck, ArrowRight, Menu, X, Loader2, ChevronDown, Star, CircleUser } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import Image from "next/image";
 
 import Link from "next/link";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation, Thumbs } from 'swiper/modules';
+import type { Swiper as SwiperType } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/thumbs';
 
 const navItems = [
   {
@@ -113,6 +121,10 @@ interface Product {
   Name?: string;
   gia?: number;
   image_url?: string;
+  anh1?: string;
+  anh2?: string;
+  anh3?: string;
+  anh4?: string;
   mo_ta?: string;
 }
 
@@ -122,6 +134,7 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isReviewSubmitting, setIsReviewSubmitting] = useState(false);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -135,7 +148,7 @@ export default function Home() {
       try {
         setLoading(true);
         setErrorMsg(null);
-        
+
         const { data, error } = await supabase
           .from("Sản phẩm")
           .select("*")
@@ -166,7 +179,7 @@ export default function Home() {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.phone) return;
-    
+
     setIsSubmitting(true);
     setSubmitSuccess(false);
 
@@ -213,12 +226,16 @@ export default function Home() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
+            className="flex items-center justify-center shrink-0 pr-6"
           >
-            <img
+            <Image
               src="/logo.png"
-              alt="Logo"
-              className="h-8 lg:h-11 w-auto object-contain"
+              alt="INSULA Logo"
+              width={160}
+              height={56}
+              className="h-10 lg:h-14 w-auto object-contain"
               style={{ filter: 'brightness(0)' }}
+              priority
             />
           </motion.a>
 
@@ -375,10 +392,13 @@ export default function Home() {
               <div
                 className="relative z-10 w-full max-w-[420px] aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-[#1A365D]/15 lg:animate-float bg-gradient-to-t from-[#D1E9FF]/40 to-transparent border border-[#A5C4E5]/30"
               >
-                <img
+                <Image
                   src="/products/meo1.png"
-                  alt="Người mẫu mỹ phẩm tự nhiên"
+                  alt="Sản phẩm INSULA cao cấp"
+                  width={420}
+                  height={560}
                   className="w-full h-full object-contain p-4"
+                  priority
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A365D]/20 via-transparent to-transparent" />
@@ -437,7 +457,7 @@ export default function Home() {
                 <p className="text-red-500 font-serif italic text-lg">{errorMsg}</p>
               </div>
             ) : featuredDisplayProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
                 {featuredDisplayProducts.map((product, idx) => (
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -446,70 +466,54 @@ export default function Home() {
                     transition={{ delay: idx * 0.1, duration: 0.6 }}
                     whileHover={{ y: -6, transition: { duration: 0.3 } }}
                     key={product.id || idx}
-                    className="group relative bg-white/30 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_4px_24px_rgba(165,196,229,0.15)] hover:shadow-[0_12px_40px_rgba(165,196,229,0.28)] transition-shadow duration-500 cursor-pointer flex flex-col border border-[#A5C4E5]/50"
+                    className="group relative bg-[#FAF9F6]/90 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-xl shadow-blue-500/10 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 cursor-pointer flex flex-col h-full border border-white/60"
                   >
                     {/* Image container */}
-                    <div className="relative w-full aspect-[4/5] overflow-hidden bg-gradient-to-br from-[#cfe2f3] to-[#8BB8DC]">
+                    <div className="relative w-full aspect-square overflow-hidden bg-[#A5C4E5]/20 backdrop-blur-xl border-b border-white/50">
                       {product.image_url ? (
-                        <img
+                        <Image
                           src={product.image_url}
-                          alt={product.Name || 'Sản phẩm'}
-                          referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
+                          alt={product.Name || 'Sản phẩm INSULA'}
+                          width={400}
+                          height={400}
+                          className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
                         />
                       ) : (
-                        /* Styled placeholder when no image */
-                        <div className="w-full h-full flex flex-col items-center justify-center gap-4">
-                          <div className="w-20 h-20 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-inner">
-                            <Leaf size={28} className="text-[#A5C4E5]" />
-                          </div>
-                          <p className="text-xs text-[#4a7fb5] uppercase tracking-widest">Hình ảnh sắp ra mắt</p>
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Leaf size={40} className="text-[#A5C4E5]" />
                         </div>
                       )}
 
-                      {/* Overlay gradient on image */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent group-hover:from-black/5 transition-all duration-500" />
-
                       {/* Glassmorphism badge top-left */}
-                      <div className="absolute top-4 left-4 bg-[#A5C4E5]/30 backdrop-blur-md border border-[#A5C4E5]/50 rounded-full px-3 py-1 flex items-center gap-1.5 shadow-sm">
+                      <div className="absolute top-4 left-4 bg-[#A5C4E5]/40 backdrop-blur-md border border-white/50 rounded-full px-3 py-1 flex items-center gap-1.5 shadow-sm">
                         <span className="text-[#1A365D] text-[10px]">★</span>
-                        <span className="text-[10px] uppercase tracking-wider text-[#4a7fb5] font-medium">New Arrival</span>
+                        <span className="text-[10px] uppercase tracking-wider text-[#1A365D] font-medium">New Arrival</span>
                       </div>
                     </div>
 
                     {/* Card body */}
                     <div className="flex flex-col flex-1 p-6">
-                      {/* Name */}
-                      <h3 className="font-serif text-xl text-[#1A365D] font-semibold leading-snug mb-1.5 group-hover:text-[#2B547E] transition-colors duration-300">
+                      <h3 className="font-serif text-lg text-[#1A365D] font-semibold leading-snug mb-1.5 group-hover:text-[#2B547E] transition-colors duration-300 line-clamp-2">
                         {product.Name || 'Sản phẩm'}
                       </h3>
-
-                      {/* Description */}
                       {product.mo_ta && (
-                        <p className="text-sm text-[#4a7fb5] font-light line-clamp-2 leading-relaxed mb-3">
+                        <p className="text-sm text-[#4a7fb5] font-light line-clamp-2 leading-relaxed mt-1">
                           {product.mo_ta}
                         </p>
                       )}
 
-                      {/* Spacer */}
                       <div className="flex-1" />
 
-                      {/* Price + CTA row */}
                       <div className="flex items-center justify-between pt-4 border-t border-[#A5C4E5]/30 mt-4">
-                        <span className="text-base font-semibold text-[#1A365D] tracking-tight">
-                          {product.gia
-                            ? Number(product.gia).toLocaleString('vi-VN') + ' đ'
-                            : 'Liên hệ'}
+                        <span className="text-base font-semibold text-[#1A365D] tracking-tight shrink-0 mr-2">
+                          {product.gia ? Number(product.gia).toLocaleString('vi-VN') + ' đ' : 'Liên hệ'}
                         </span>
-
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="flex items-center gap-1.5 bg-[#A5C4E5] text-white text-xs uppercase tracking-widest px-5 py-2.5 rounded-full hover:bg-[#8BB8DC] transition-colors duration-300 font-medium shadow-[0_0_15px_rgba(165,196,229,0.5)]"
+                        <Link
+                          href="/san-pham"
+                          className="shrink-0 flex items-center gap-1.5 bg-[#A5C4E5] text-white text-xs uppercase tracking-widest px-4 py-2 rounded-full hover:bg-[#8BB8DC] transition-all duration-300 font-medium shadow-[0_0_15px_rgba(165,196,229,0.3)] group-hover:shadow-[0_0_20px_rgba(165,196,229,0.8)] active:scale-95 whitespace-nowrap"
                         >
                           Chi tiết
-                          <ArrowRight size={12} />
-                        </motion.button>
+                        </Link>
                       </div>
                     </div>
                   </motion.div>
@@ -610,7 +614,7 @@ export default function Home() {
                       "Đang Ký Ngay"
                     )}
                   </motion.button>
-                  
+
                   {/* Success Message */}
                   <AnimatePresence>
                     {submitSuccess && (
@@ -632,13 +636,16 @@ export default function Home() {
 
       </main>
 
+
+      {/* ─── FOOTER ────────────────────────────────────────────── */}
+
       {/* ─── FOOTER ────────────────────────────────────────────── */}
       <footer className="w-full py-12 bg-[#1A365D]">
         <div className="max-w-7xl mx-auto px-6 lg:px-24 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="font-serif text-2xl tracking-widest text-white uppercase">INSULA</p>
           <p className="text-sm font-light text-[#8BB8DC]">© 2026 INSULA. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            {["Facebook", "Instagram", "TikTok"].map((s) => (
+            {["Facebook", "Shopee", "TikTok"].map((s) => (
               <a key={s} href="#" className="text-xs uppercase tracking-widest text-[#8BB8DC] hover:text-white transition-colors">
                 {s}
               </a>

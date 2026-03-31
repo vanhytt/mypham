@@ -2,9 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Filter, X, Leaf } from "lucide-react";
-import Link from "next/link"; 
+import { Filter, X, Leaf, Star, CircleUser } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation, Thumbs } from 'swiper/modules';
+import type { Swiper as SwiperType } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/thumbs';
 
 interface Product {
   id: number | string;
@@ -12,6 +20,9 @@ interface Product {
   gia: number;
   danh_muc?: string;
   anh_url: string;
+  anh1?: string;
+  anh2?: string;
+  anh3?: string;
   mo_ta?: string;
 }
 
@@ -28,10 +39,47 @@ export default function ProductListingPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
+  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("Tất cả");
   const [selectedPriceRange, setSelectedPriceRange] = useState<number>(0);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
+
+  // Review form states
+  const [reviewText, setReviewText] = useState("");
+  const [reviewName, setReviewName] = useState("");
+  const [reviewSuccess, setReviewSuccess] = useState(false);
+  const [isReviewSubmitting, setIsReviewSubmitting] = useState(false);
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewText.trim()) return;
+
+    setIsReviewSubmitting(true);
+    setReviewSuccess(false);
+    try {
+      const REVIEW_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwrJuxPHtT0z1atVMDhh-tY3Cys7cRyV50-G2H1zzlYlmtjr8Mzp6agfEbnKGbOIEH4/exec';
+      await fetch(REVIEW_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'review',
+          name: reviewName.trim() || 'Khách hàng ẩn danh',
+          comment: reviewText.trim(),
+          productName: selectedProduct?.ten_sp || '',
+        })
+      });
+
+      setReviewSuccess(true);
+      setReviewText('');
+      setReviewName('');
+      setTimeout(() => setReviewSuccess(false), 4000);
+    } catch (error) {
+      console.error('Error submitting review:', error);
+    } finally {
+      setIsReviewSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -80,11 +128,14 @@ export default function ProductListingPage() {
       <header className="w-full bg-white/20 backdrop-blur-xl border-b border-white/40 shadow-sm py-4 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
           <Link href="/">
-            <img
+            <Image
               src="/logo.png"
-              alt="Logo"
+              alt="INSULA Logo"
+              width={140}
+              height={44}
               className="h-8 lg:h-11 w-auto object-contain"
               style={{ filter: 'brightness(0)' }}
+              priority
             />
           </Link>
           <div className="hidden md:flex gap-8">
@@ -95,7 +146,7 @@ export default function ProductListingPage() {
               Sản phẩm
             </span>
           </div>
-          <button 
+          <button
             className="md:hidden p-2 bg-[#A5C4E5]/20 rounded-full text-[#705E4C] hover:bg-[#A5C4E5]/40 transition-colors"
             onClick={() => setMobileFilterOpen(true)}
           >
@@ -125,8 +176,8 @@ export default function ProductListingPage() {
             </h3>
             <div className="space-y-4">
               {CATEGORIES.map(cat => (
-                <label 
-                  key={cat} 
+                <label
+                  key={cat}
                   className="flex items-center gap-3 cursor-pointer group"
                   onClick={() => setSelectedCategory(cat)}
                 >
@@ -148,8 +199,8 @@ export default function ProductListingPage() {
             </h3>
             <div className="space-y-4">
               {PRICE_RANGES.map((range, idx) => (
-                <label 
-                  key={range.label} 
+                <label
+                  key={range.label}
                   className="flex items-center gap-3 cursor-pointer group"
                   onClick={() => setSelectedPriceRange(idx)}
                 >
@@ -177,7 +228,7 @@ export default function ProductListingPage() {
             >
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setMobileFilterOpen(false)} />
-              
+
               {/* Drawer */}
               <motion.div
                 initial={{ x: "100%" }}
@@ -192,19 +243,19 @@ export default function ProductListingPage() {
                     <X size={20} />
                   </button>
                 </div>
-                
+
                 <div className="p-6 space-y-10 flex-1">
                   <div>
                     <h3 className="text-base font-serif font-semibold text-[#1A365D] mb-5 uppercase tracking-widest">Danh Mục</h3>
                     <div className="space-y-4">
                       {CATEGORIES.map(cat => (
                         <label key={cat} className="flex items-center gap-3 cursor-pointer">
-                          <input 
-                            type="radio" 
-                            name="mobile-cat" 
+                          <input
+                            type="radio"
+                            name="mobile-cat"
                             checked={selectedCategory === cat}
                             onChange={() => setSelectedCategory(cat)}
-                            className="w-5 h-5 accent-[#A5C4E5]" 
+                            className="w-5 h-5 accent-[#A5C4E5]"
                           />
                           <span className={`text-base ${selectedCategory === cat ? 'text-[#1A365D] font-medium' : 'text-[#4a7fb5]'}`}>
                             {cat}
@@ -219,12 +270,12 @@ export default function ProductListingPage() {
                     <div className="space-y-4">
                       {PRICE_RANGES.map((range, idx) => (
                         <label key={range.label} className="flex items-center gap-3 cursor-pointer">
-                          <input 
-                            type="radio" 
-                            name="mobile-price" 
+                          <input
+                            type="radio"
+                            name="mobile-price"
                             checked={selectedPriceRange === idx}
                             onChange={() => setSelectedPriceRange(idx)}
-                            className="w-5 h-5 accent-[#A5C4E5]" 
+                            className="w-5 h-5 accent-[#A5C4E5]"
                           />
                           <span className={`text-base ${selectedPriceRange === idx ? 'text-[#1A365D] font-medium' : 'text-[#4a7fb5]'}`}>
                             {range.label}
@@ -236,7 +287,7 @@ export default function ProductListingPage() {
                 </div>
 
                 <div className="p-6 bg-white/50 border-t border-[#A5C4E5]/30 sticky bottom-0">
-                  <button 
+                  <button
                     onClick={() => setMobileFilterOpen(false)}
                     className="w-full py-4 bg-[#A5C4E5] hover:bg-[#8BB8DC] transition-colors text-white rounded-xl uppercase tracking-widest font-medium text-sm shadow-[0_0_15px_rgba(165,196,229,0.5)]"
                   >
@@ -277,7 +328,7 @@ export default function ProductListingPage() {
               <p className="text-[#8c8273] text-sm mt-2">Vui lòng kiểm tra lại cấu hình Supabase (.env.local) hoặc đường truyền mạng.</p>
             </div>
           ) : filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch">
               {filteredProducts.map((product, idx) => (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95, y: 15 }}
@@ -285,45 +336,52 @@ export default function ProductListingPage() {
                   key={`${product.id}-${selectedCategory}-${selectedPriceRange}`}
                   transition={{ delay: idx * 0.05, duration: 0.4 }}
                   whileHover={{ y: -6, transition: { duration: 0.3 } }}
-                  className="group relative bg-white/30 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_4px_24px_rgba(165,196,229,0.15)] hover:shadow-[0_12px_40px_rgba(165,196,229,0.28)] transition-shadow duration-500 cursor-pointer flex flex-col h-full border border-[#A5C4E5]/50"
+                  className="group relative bg-[#FAF9F6]/90 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-xl shadow-blue-500/10 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 cursor-pointer flex flex-col h-full border border-white/60"
                 >
-                  <div className="relative w-full aspect-[3/4] overflow-hidden bg-gradient-to-br from-[#D1E9FF]/60 to-[#E0E7FF]/40">
-                    <img
-                      src={product.anh_url}
-                      alt={product.ten_sp}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent group-hover:from-black/5 transition-all duration-500" />
-                    
+                  <div className="relative w-full aspect-square overflow-hidden bg-[#A5C4E5]/20 backdrop-blur-xl border-b border-white/50">
+                    {product.anh_url ? (
+                      <Image
+                        src={product.anh_url}
+                        alt={product.ten_sp}
+                        width={400}
+                        height={400}
+                        className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Leaf size={40} className="text-[#A5C4E5]" />
+                      </div>
+                    )}
+
                     {/* Category badge */}
                     {product.danh_muc && (
-                      <div className="absolute top-4 left-4 bg-[#A5C4E5]/30 backdrop-blur-md rounded-full px-3 py-1 text-[10px] uppercase tracking-wider text-[#1A365D] font-medium shadow-sm border border-[#A5C4E5]/50">
+                      <div className="absolute top-4 left-4 bg-white/40 backdrop-blur-md rounded-full px-3 py-1 text-[10px] uppercase tracking-wider text-[#1A365D] font-medium shadow-sm border border-white/50">
                         {product.danh_muc}
                       </div>
                     )}
                   </div>
 
+                  {/* Text content */}
                   <div className="flex flex-col flex-1 p-6">
-                    <h3 className="font-serif text-xl text-[#1A365D] font-semibold leading-snug mb-1.5 group-hover:text-[#2B547E] transition-colors duration-300">
+                    <h3 className="font-serif text-lg text-[#1A365D] font-semibold leading-snug mb-1.5 group-hover:text-[#2B547E] transition-colors duration-300 line-clamp-2">
                       {product.ten_sp}
                     </h3>
-                    
                     {product.mo_ta && (
-                      <p className="text-sm text-[#4a7fb5] font-light line-clamp-2 leading-relaxed mb-3">
+                      <p className="text-sm text-[#4a7fb5] font-light line-clamp-2 leading-relaxed mt-1">
                         {product.mo_ta}
                       </p>
                     )}
 
                     <div className="flex-1" />
 
-                    <div className="flex items-center justify-between pt-4 border-t border-[#C5A059]/20 mt-4">
-                      <span className="text-base font-semibold text-[#4A3728] tracking-tight">
+                    <div className="flex items-center justify-between pt-4 border-t border-[#A5C4E5]/30 mt-4">
+                      <span className="text-base font-semibold text-[#1A365D] tracking-tight shrink-0 mr-2">
                         {Number(product.gia).toLocaleString('vi-VN')} đ
                       </span>
 
                       <button
                         onClick={() => setSelectedProduct(product)}
-                        className="flex items-center gap-1.5 bg-[#A5C4E5] text-white text-xs uppercase tracking-widest px-4 py-2 rounded-full hover:bg-[#8BB8DC] transition-colors duration-300 font-medium shadow-[0_0_15px_rgba(165,196,229,0.5)] active:scale-95"
+                        className="shrink-0 flex items-center gap-1.5 bg-[#A5C4E5] text-white text-xs uppercase tracking-widest px-4 py-2 rounded-full hover:bg-[#8BB8DC] transition-all duration-300 font-medium shadow-[0_0_15px_rgba(165,196,229,0.3)] group-hover:shadow-[0_0_20px_rgba(165,196,229,0.8)] active:scale-95 whitespace-nowrap"
                       >
                         Chi tiết
                       </button>
@@ -339,7 +397,7 @@ export default function ProductListingPage() {
               </div>
               <h3 className="text-xl font-serif text-[#1A365D] mb-2 font-medium">Không tìm thấy sản phẩm</h3>
               <p className="text-[#4a7fb5] text-sm">Vui lòng điều chỉnh lại bộ lọc để xem bộ kết quả khác.</p>
-              <button 
+              <button
                 onClick={() => { setSelectedCategory("Tất cả"); setSelectedPriceRange(0); }}
                 className="mt-6 px-8 py-3 border border-[#A5C4E5] text-[#1A365D] rounded-full hover:bg-[#A5C4E5] hover:text-white transition-colors text-xs uppercase tracking-widest font-medium"
               >
@@ -366,15 +424,14 @@ export default function ProductListingPage() {
               onClick={() => setSelectedProduct(null)}
             />
 
-            {/* Modal Box — column on mobile, row on md+ */}
+            {/* Modal Box */}
             <motion.div
               initial={{ opacity: 0, scale: 0.93, y: 24 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.93, y: 24 }}
               transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="relative z-10 bg-white/30 backdrop-blur-xl rounded-[1.5rem] shadow-2xl shadow-[#A5C4E5]/25 max-w-4xl w-full max-h-[92vh] overflow-hidden flex flex-col md:flex-row border border-[#A5C4E5]/30"
+              className="relative z-10 bg-[#FAF9F6]/90 backdrop-blur-2xl rounded-[1.5rem] shadow-2xl shadow-blue-500/10 w-[95%] sm:w-full max-w-5xl max-h-[90vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row border border-white/60"
             >
-              {/* Close Button */}
               <button
                 onClick={() => setSelectedProduct(null)}
                 className="absolute top-4 right-4 z-20 w-11 h-11 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform"
@@ -382,63 +439,200 @@ export default function ProductListingPage() {
                 <X size={20} className="text-[#1A365D]" />
               </button>
 
-              {/* Image — 260px tall on mobile, full-height on md+ */}
-              <div className="w-full md:w-[42%] shrink-0 bg-gradient-to-br from-[#D1E9FF]/60 to-[#E0E7FF]/40 overflow-hidden">
-                <div className="h-[260px] md:h-full">
-                  {selectedProduct.anh_url ? (
-                    <img
-                      src={selectedProduct.anh_url}
-                      alt={selectedProduct.ten_sp}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Leaf size={48} className="text-[#A5C4E5]" />
-                    </div>
-                  )}
+              {/* Image Side */}
+              <div className="w-full md:w-1/2 shrink-0 bg-white/30 backdrop-blur-xl border-b md:border-b-0 md:border-r border-white/50 relative p-4 lg:p-6 pb-6 rounded-t-[1.5rem] md:rounded-tr-none md:rounded-l-[1.5rem]">
+                <div className="w-full aspect-square rounded-[1rem] overflow-hidden shadow-lg shadow-black/5 swiper-modal-wrap bg-white/30 backdrop-blur-sm relative transition-all duration-300">
+                  {(() => {
+                    const imgs = [
+                      selectedProduct.anh_url,
+                      selectedProduct.anh1,
+                      selectedProduct.anh2,
+                      selectedProduct.anh3,
+                    ].filter(Boolean) as string[];
+
+                    const renderImage = (src: string, index: number) => (
+                      <img
+                        key={index}
+                        src={src}
+                        alt={`${selectedProduct.ten_sp} view ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    );
+
+                    if (imgs.length === 0) {
+                      return (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Leaf size={48} className="text-[#A5C4E5]" />
+                        </div>
+                      );
+                    }
+
+                    if (imgs.length === 1) {
+                      return (
+                        <div className="w-full h-full flex items-center justify-center">
+                          {renderImage(imgs[0], 0)}
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <>
+                        <style>{`
+                          .swiper-modal-wrap { height: 100%; width: 100%; }
+                          .swiper-modal-wrap .swiper,
+                          .swiper-modal-wrap .swiper-wrapper,
+                          .swiper-modal-wrap .swiper-slide { height: 100%; width: 100%; }
+                          .swiper-modal-wrap .swiper-button-prev,
+                          .swiper-modal-wrap .swiper-button-next { color: #1A365D !important; width: 44px; height: 44px; }
+                          .swiper-modal-wrap .swiper-button-prev::after,
+                          .swiper-modal-wrap .swiper-button-next::after { font-size: 24px !important; font-weight: 900 !important; }
+                          .swiper-modal-wrap .swiper-pagination-bullet { background: #A5C4E5; opacity: 0.5; }
+                          .swiper-modal-wrap .swiper-pagination-bullet-active { background: #2B547E; opacity: 1; }
+                        `}</style>
+                        <Swiper
+                          modules={[Autoplay, Pagination, Navigation, Thumbs]}
+                          thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+                          loop={imgs.length > 1}
+                          autoplay={{ delay: 3500, disableOnInteraction: false }}
+                          pagination={{ clickable: true }}
+                          navigation={true}
+                          className="swiper-modal-wrap"
+                        >
+                          {imgs.map((src, i) => (
+                            <SwiperSlide key={i}>
+                              {renderImage(src, i)}
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+                      </>
+                    );
+                  })()}
                 </div>
+
+                {/* Thumbnails (Mobile only) */}
+                {(() => {
+                  const imgs = [
+                    selectedProduct.anh_url,
+                    selectedProduct.anh1,
+                    selectedProduct.anh2,
+                    selectedProduct.anh3,
+                  ].filter(Boolean) as string[];
+
+                  if (imgs.length <= 1) return null;
+
+                  return (
+                    <div className="md:hidden w-full h-20 shrink-0 mt-4 rounded-xl overflow-hidden px-1">
+                      <style>{`
+                         .swiper-thumb-wrap { height: 100%; width: 100%; padding-bottom: 4px; }
+                         .swiper-thumb-wrap .swiper-slide { 
+                           border: 2px solid transparent; 
+                           border-radius: 0.5rem; 
+                           overflow: hidden; 
+                         }
+                         .swiper-thumb-wrap .swiper-slide-thumb-active { 
+                           border-color: #A5C4E5; 
+                         }
+                         .swiper-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+                       `}</style>
+                      <Swiper
+                        onSwiper={setThumbsSwiper}
+                        spaceBetween={12}
+                        slidesPerView={4}
+                        freeMode={true}
+                        watchSlidesProgress={true}
+                        modules={[Navigation, Thumbs]}
+                        className="swiper-thumb-wrap"
+                      >
+                        {imgs.map((src, i) => (
+                          <SwiperSlide key={`thumb-${i}`}>
+                            <img src={src} alt="Thumb" />
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                    </div>
+                  );
+                })()}
               </div>
 
-              {/* Info panel — scrollable content + pinned CTA */}
-              <div className="flex flex-col flex-1 overflow-hidden">
-                {/* Scrollable text area */}
-                <div className="flex-1 overflow-y-auto p-6 md:p-8 lg:p-10">
-                  {selectedProduct.danh_muc && (
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-[#4a7fb5] font-medium mb-3 block">
-                      {selectedProduct.danh_muc}
-                    </span>
-                  )}
-
-                  <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-[#1A365D] font-semibold leading-tight mb-3">
+              {/* Info panel */}
+              <div className="flex flex-col w-full md:w-1/2 md:absolute md:top-0 md:right-0 md:h-full md:overflow-hidden">
+                <div className="p-8 lg:p-12 md:flex-1 md:overflow-y-auto">
+                  <h2 className="font-serif text-2xl md:text-3xl text-[#1A365D] font-semibold mb-3">
                     {selectedProduct.ten_sp}
                   </h2>
-
-                  <div className="text-xl md:text-2xl font-bold text-[#1A365D] mb-5 tracking-tight">
-                    {Number(selectedProduct.gia).toLocaleString('vi-VN')}
-                    <span className="text-base font-medium text-[#4a7fb5] ml-1">đ</span>
+                  <div className="text-xl font-bold text-[#1A365D] mb-5 tracking-tight">
+                    {Number(selectedProduct.gia).toLocaleString('vi-VN')} đ
                   </div>
-
                   {selectedProduct.mo_ta && (
-                    <div>
-                      <h4 className="text-xs uppercase tracking-widest text-[#4a7fb5] font-medium mb-3">Mô tả</h4>
-                      <p className="text-[#2B547E] text-sm md:text-base leading-relaxed">{selectedProduct.mo_ta}</p>
+                    <div className="mb-8">
+                      <p className="text-[#2B547E] text-sm md:text-base leading-relaxed whitespace-pre-line">{selectedProduct.mo_ta}</p>
                     </div>
                   )}
-                </div>
 
-                {/* Pinned CTA buttons */}
-                <div className="shrink-0 p-5 md:p-6 border-t border-[#A5C4E5]/30 bg-white/20 backdrop-blur-sm flex gap-3">
-                  <Link
-                    href="/#Hệ thống"
-                    onClick={() => setSelectedProduct(null)}
-                    className="flex-1 text-center py-3.5 px-4 bg-[#A5C4E5] text-white rounded-2xl font-medium uppercase tracking-widest text-xs md:text-sm hover:bg-[#8BB8DC] transition-colors shadow-[0_0_15px_rgba(165,196,229,0.5)]"
-                  >
-                    Liên hệ tư vấn
-                  </Link>
-                  <button
-                    onClick={() => setSelectedProduct(null)}
-                    className="flex-1 sm:flex-none py-3.5 px-5 border border-[#A5C4E5]/40 text-[#705E4C] rounded-2xl font-medium text-sm hover:border-[#A5C4E5] hover:text-[#1A365D] bg-white/30 backdrop-blur-sm transition-colors"
-                  >
+                  {/* Reviews */}
+                  <div className="border-t border-[#A5C4E5]/20 pt-8 mt-4">
+                    <div className="flex items-center justify-between mb-5">
+                      <h4 className="text-sm uppercase tracking-widest text-[#1A365D] font-bold">Đánh giá khách hàng</h4>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#C5A059] font-bold text-lg">4.8/5</span>
+                        <div className="flex">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star key={star} size={16} className={star === 5 ? "text-[#C5A059]/40 fill-[#C5A059]/40" : "text-[#C5A059] fill-[#C5A059]"} />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="bg-white/30 backdrop-blur-md border border-white/40 p-4 rounded-2xl shadow-sm">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0">
+                            <CircleUser size={24} className="text-[#1A365D]" />
+                          </div>
+                          <div>
+                            <span className="font-semibold text-sm text-[#1A365D] block">Khách hàng ẩn danh</span>
+                            <div className="flex"><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /><Star size={12} className="text-[#C5A059] fill-[#C5A059]" /></div>
+                          </div>
+                        </div>
+                        <p className="text-[#2B547E] text-sm leading-relaxed px-1">"Sản phẩm dùng rất mướt, kết cấu nhẹ không gây bết rít. Mùi thơm nhẹ nhàng cực ưng."</p>
+                      </div>
+                    </div>
+
+                    {/* Review Form */}
+                    <div className="mt-8 pt-8 border-t border-[#A5C4E5]/20">
+                      <h4 className="text-sm uppercase tracking-widest text-[#1A365D] font-bold mb-4">Gửi đánh giá</h4>
+                      <form onSubmit={handleSubmitReview} className="space-y-3">
+                        <input
+                          type="text"
+                          value={reviewName}
+                          onChange={(e) => setReviewName(e.target.value)}
+                          placeholder="Tên của bạn"
+                          className="w-full bg-white/30 backdrop-blur-md border border-white/40 rounded-2xl px-4 py-3 text-sm text-[#1A365D] placeholder-[#1A365D]/40 focus:outline-none focus:ring-2 focus:ring-[#A5C4E5]/50 transition-all"
+                        />
+                        <textarea
+                          value={reviewText}
+                          onChange={(e) => setReviewText(e.target.value)}
+                          placeholder="Nhập cảm nghĩ của bạn..."
+                          className="w-full min-h-[90px] bg-white/30 backdrop-blur-md border border-white/40 rounded-2xl p-4 text-sm text-[#1A365D] placeholder-[#1A365D]/40 focus:outline-none focus:ring-2 focus:ring-[#A5C4E5]/50 transition-all resize-none"
+                        />
+                        {reviewSuccess && (
+                          <div className="text-sm text-[#1A365D] bg-[#A5C4E5]/30 rounded-2xl px-4 py-3 border border-[#A5C4E5]/40 mb-3">
+                            ✅ Cảm ơn bạn đã đánh giá!
+                          </div>
+                        )}
+                        <button
+                          type="submit"
+                          disabled={isReviewSubmitting || !reviewText.trim()}
+                          className="w-full py-4 bg-[#A5C4E5] hover:bg-[#8eb3db] disabled:bg-gray-300 text-[#1A365D] font-bold rounded-2xl shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                        >
+                          {isReviewSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div className="shrink-0 p-5 md:p-6 border-t border-[#A5C4E5]/30 bg-white/40 backdrop-blur-sm flex gap-3">
+                  <button onClick={() => setSelectedProduct(null)} className="flex-1 py-3.5 bg-[#A5C4E5] text-white rounded-2xl font-medium text-xs uppercase tracking-widest">
                     Đóng
                   </button>
                 </div>
