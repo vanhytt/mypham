@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Filter, X, Leaf, Star, CircleUser } from "lucide-react";
+import { Filter, X, Leaf, Star, CircleUser, Loader2, ShieldCheck, Heart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
@@ -49,6 +49,38 @@ export default function ProductListingPage() {
   const [reviewName, setReviewName] = useState("");
   const [reviewSuccess, setReviewSuccess] = useState(false);
   const [isReviewSubmitting, setIsReviewSubmitting] = useState(false);
+
+  // Consultation form states
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwrJuxPHtT0z1atVMDhh-tY3Cys7cRyV50-G2H1zzlYlmtjr8Mzp6agfEbnKGbOIEH4/exec';
+  const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.phone) return;
+
+    setIsSubmitting(true);
+    setSubmitSuccess(false);
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      setSubmitSuccess(true);
+      setFormData({ name: "", phone: "", email: "" });
+      setTimeout(() => setSubmitSuccess(false), 5000);
+    } catch (error) {
+      console.error("Lỗi gửi form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -648,6 +680,91 @@ export default function ProductListingPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ─── LEAD FORM ─────────────────────────────────────────── */}
+      <section className="w-full px-6 py-28 bg-[#F8FAFC]">
+        <div className="max-w-4xl mx-auto bg-white/30 backdrop-blur-xl rounded-3xl p-10 lg:p-16 shadow-[0_8px_40px_rgba(139,92,246,0.15)] relative overflow-hidden border border-white/50">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#E0E7FF] to-[#FCE7F3] rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row gap-16 items-center">
+            <div className="w-full lg:w-1/2 text-center lg:text-left">
+              <span className="text-xs uppercase tracking-[0.2em] text-[#4a7fb5] font-medium mb-3 block">Chăm sóc khách hàng</span>
+              <h2 className="text-4xl lg:text-5xl font-serif text-[#1A365D] mb-6 tracking-tight">Nhận tư vấn<br />miễn phí</h2>
+              <p className="text-[#4a7fb5] text-base leading-relaxed">
+                Để lại thông tin, chuyên gia của chúng tôi sẽ liên hệ với bạn trong 15 phút để tư vấn lộ trình chăm sóc da phù hợp nhất.
+              </p>
+            </div>
+
+            <div className="w-full lg:w-1/2">
+              <form className="flex flex-col space-y-4" onSubmit={handleFormSubmit}>
+                {[
+                  { id: "lead-name", key: "name", label: "Họ tên *", type: "text", placeholder: "Nhập họ và tên của bạn", required: true },
+                  { id: "lead-phone", key: "phone", label: "Số điện thoại *", type: "tel", placeholder: "Nhập số điện thoại", required: true },
+                  { id: "lead-email", key: "email", label: "Email", type: "email", placeholder: "Nhập địa chỉ email", required: false },
+                ].map((f) => (
+                  <div key={f.id} className="flex flex-col space-y-1.5">
+                    <label htmlFor={f.id} className="text-sm font-medium text-[#1A365D]">{f.label}</label>
+                    <input
+                      type={f.type}
+                      id={f.id}
+                      required={f.required}
+                      value={formData[f.key as keyof typeof formData]}
+                      onChange={(e) => setFormData({ ...formData, [f.key]: e.target.value })}
+                      disabled={isSubmitting}
+                      placeholder={f.placeholder}
+                      className="w-full px-5 py-4 bg-white/80 border border-[#b8d5ef] focus:border-[#2B547E] rounded-xl outline-none transition-colors text-[#1A365D] placeholder:text-[#4a7fb5]/50 shadow-sm disabled:opacity-50"
+                    />
+                  </div>
+                ))}
+                <motion.button
+                  whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                  whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full mt-2 bg-[#A5C4E5] text-white py-4 rounded-xl font-medium tracking-wide hover:bg-[#8BB8DC] transition-colors shadow-[0_0_20px_rgba(165,196,229,0.5)] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="animate-spin" size={18} />
+                      Đang gửi...
+                    </>
+                  ) : (
+                    "Đang Ký Ngay"
+                  )}
+                </motion.button>
+
+                <AnimatePresence>
+                  {submitSuccess && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl text-center text-sm mt-4 font-medium"
+                    >
+                      Gửi thông tin thành công! Chúng tôi sẽ liên hệ lại sớm nhất.
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FOOTER ────────────────────────────────────────────── */}
+      <footer className="w-full py-12 bg-[#1A365D]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-24 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="font-serif text-2xl tracking-widest text-white uppercase">INSULA</p>
+          <p className="text-sm font-light text-[#8BB8DC]">© 2026 INSULA. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            {["Facebook", "Shopee", "TikTok"].map((s) => (
+              <a key={s} href="#" className="text-xs uppercase tracking-widest text-[#8BB8DC] hover:text-white transition-colors">
+                {s}
+              </a>
+            ))}
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
