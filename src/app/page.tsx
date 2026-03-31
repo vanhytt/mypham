@@ -2,17 +2,11 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { Leaf, Heart, ShieldCheck, ArrowRight, Menu, X, Loader2, ChevronDown, Star, CircleUser } from "lucide-react";
+import { Leaf, Heart, ShieldCheck, ArrowRight, Menu, X, Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 
 import Link from "next/link";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation, Thumbs } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-import 'swiper/css/thumbs';
 
 const navItems = [
   {
@@ -133,7 +127,6 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isReviewSubmitting, setIsReviewSubmitting] = useState(false);
 
   useEffect(() => {
     async function fetchProducts() {

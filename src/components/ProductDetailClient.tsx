@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Leaf, Star, CircleUser, ArrowLeft, ShieldCheck, Heart, Loader2 } from "lucide-react";
+import { Star, ArrowLeft, ShieldCheck, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation, Thumbs } from 'swiper/modules';
