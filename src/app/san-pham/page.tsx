@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Filter, X, Leaf, Star, CircleUser, Loader2, ShieldCheck, Heart } from "lucide-react";
+import { Filter, X, Leaf, Star, CircleUser, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
