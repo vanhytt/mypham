@@ -25,6 +25,12 @@ interface Product {
   anh2?: string;
   anh3?: string;
   anh4?: string;
+  anh5?: string;
+  anh6?: string;
+  anh7?: string;
+  anh8?: string;
+  anh9?: string;
+  anh10?: string;
   mo_ta?: string;
 }
 
@@ -43,6 +49,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     product.anh2,
     product.anh3,
     product.anh4,
+    product.anh5,
+    product.anh6,
+    product.anh7,
+    product.anh8,
+    product.anh9,
+    product.anh10,
   ].filter(Boolean) as string[];
 
   const handleSubmitReview = async (e: React.FormEvent) => {

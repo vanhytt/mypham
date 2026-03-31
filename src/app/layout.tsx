@@ -31,7 +31,11 @@ export const metadata: Metadata = {
     title: "INSULA | Mỹ phẩm hữu cơ & Thiên nhiên cao cấp",
     description: "Đánh thức vẻ đẹp tự nhiên với dòng mỹ phẩm hữu cơ thuần khiết nhất.",
     images: ["/products/meo1.png"],
-  }
+  },
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({

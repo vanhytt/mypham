@@ -23,6 +23,13 @@ interface Product {
   anh1?: string;
   anh2?: string;
   anh3?: string;
+  anh4?: string;
+  anh5?: string;
+  anh6?: string;
+  anh7?: string;
+  anh8?: string;
+  anh9?: string;
+  anh10?: string;
   mo_ta?: string;
 }
 
@@ -480,6 +487,13 @@ export default function ProductListingPage() {
                       selectedProduct.anh1,
                       selectedProduct.anh2,
                       selectedProduct.anh3,
+                      selectedProduct.anh4,
+                      selectedProduct.anh5,
+                      selectedProduct.anh6,
+                      selectedProduct.anh7,
+                      selectedProduct.anh8,
+                      selectedProduct.anh9,
+                      selectedProduct.anh10,
                     ].filter(Boolean) as string[];
 
                     const renderImage = (src: string, index: number) => (
@@ -551,6 +565,13 @@ export default function ProductListingPage() {
                     selectedProduct.anh1,
                     selectedProduct.anh2,
                     selectedProduct.anh3,
+                    selectedProduct.anh4,
+                    selectedProduct.anh5,
+                    selectedProduct.anh6,
+                    selectedProduct.anh7,
+                    selectedProduct.anh8,
+                    selectedProduct.anh9,
+                    selectedProduct.anh10,
                   ].filter(Boolean) as string[];
 
                   if (imgs.length <= 1) return null;
