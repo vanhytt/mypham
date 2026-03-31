@@ -360,9 +360,9 @@ export default function Home() {
               {/* Trust badges */}
               <div className="flex gap-8 pt-4 border-t border-[#A5C4E5]/40">
                 {[
-                  { num: "100%", label: "Từ thiên nhiên" },
+                  { num: "24h", label: "Lớp nền bền bỉ" },
                   { num: "Cruelty", label: "Free • Không thử nghiệm" },
-                  { num: "4★", label: "Được kiểm chứng lâm sàng" },
+                  { num: "5★", label: "Được kiểm chứng lâm sàng" },
                 ].map((b) => (
                   <div key={b.num} className="flex flex-col">
                     <span className="text-base font-serif text-[#1A365D] font-semibold">{b.num}</span>
@@ -403,7 +403,7 @@ export default function Home() {
               >
                 <p className="text-[10px] uppercase tracking-widest text-[#4a7fb5] mb-1">Best Seller</p>
                 <p className="text-sm font-serif text-[#1A365D] font-medium">INSULA CUSHION</p>
-                <p className="text-xs text-[#2B547E]">950.000 đ</p>
+                <p className="text-xs text-[#2B547E]">360.000 đ</p>
               </div>
 
               {/* Top badge */}
@@ -416,7 +416,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-[#4a7fb5]">Thành phần</p>
-                  <p className="text-xs font-medium text-[#1A365D]">100% Thiên nhiên</p>
+                  <p className="text-xs font-medium text-[#1A365D]">Bền bỉ 24h</p>
                 </div>
               </div>
             </div>
@@ -532,7 +532,7 @@ export default function Home() {
             </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {[
-                { icon: <Leaf size={32} />, title: "Thành Phần Tự Nhiên", desc: "100% chiết xuất từ thiên nhiên, an toàn và lành tính cho mọi loại da nhạy cảm nhất." },
+                { icon: <Leaf size={32} />, title: "Che phủ tự nhiên", desc: "Không kích ứng da, an toàn và lành tính cho mọi loại da nhạy cảm nhất." },
                 { icon: <Heart size={32} />, title: "Cruelty-Free", desc: "Cam kết không thử nghiệm trên động vật trong toàn bộ quá trình nghiên cứu và sản xuất." },
                 { icon: <ShieldCheck size={32} />, title: "Chất Lượng Vượt Trội", desc: "Được kiểm chứng lâm sàng đem lại hiệu quả rõ rệt sau 4 tuần sử dụng đều đặn." },
               ].map((item, i) => (
