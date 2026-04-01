@@ -391,6 +391,7 @@ export default function Home() {
                   height={560}
                   className="w-full h-full object-contain p-4"
                   priority
+                  quality={80}
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A365D]/20 via-transparent to-transparent" />
@@ -469,6 +470,7 @@ export default function Home() {
                           width={400}
                           height={400}
                           className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
+                          quality={75}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">

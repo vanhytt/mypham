@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import dynamic from "next/dynamic";
 
-import FloatingContact from "@/components/FloatingContact";
+const inter = Inter({ subsets: ["vietnamese"], variable: "--font-inter", display: "swap" });
+const playfair = Playfair_Display({ subsets: ["vietnamese"], variable: "--font-playfair", display: "swap" });
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
+const DynamicFloatingContact = dynamic(() => import("@/components/FloatingContact"), { ssr: false });
 
 export const metadata: Metadata = {
   title: "INSULA | Thương hiệu mỹ phẩm thiên nhiên cao cấp",
@@ -55,7 +56,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         {/* Background is handled cleanly by globals.css without watermark */}
         {children}
-        <FloatingContact />
+        <DynamicFloatingContact />
       </body>
     </html>
   );
