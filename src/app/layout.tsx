@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["vietnamese"], variable: "--font-inter", display: "swap" });
 const playfair = Playfair_Display({ subsets: ["vietnamese"], variable: "--font-playfair", display: "swap" });
@@ -58,7 +58,18 @@ export default function RootLayout({
         {/* Background is handled cleanly by globals.css without watermark */}
         {children}
         <DynamicFloatingContact />
-        <GoogleAnalytics gaId="G-N1F4KK2M03" strategy="lazyOnload" />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=G-N1F4KK2M03`}
+          strategy="lazyOnload"
+        />
+        <Script id="google-analytics" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-N1F4KK2M03');
+          `}
+        </Script>
       </body>
     </html>
   );
