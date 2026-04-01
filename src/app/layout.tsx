@@ -12,13 +12,14 @@ const DynamicFloatingContact = dynamic(() => import("@/components/FloatingContac
 export const metadata: Metadata = {
   title: "INSULA | Vẻ đẹp nguyên bản",
   description: "Cushion cao cấp giúp che phủ hoàn hảo và tôn vinh làn da của bạn.",
+  metadataBase: new URL("https://insula.vn"),
   openGraph: {
     title: "INSULA | Vẻ đẹp nguyên bản",
     description: "Cushion cao cấp giúp che phủ hoàn hảo và tôn vinh làn da của bạn.",
     url: "https://insula.vn",
     images: [
       {
-        url: "/products/meo1.png",
+        url: "https://insula.vn/products/meo1.png",
         width: 1200,
         height: 630,
         alt: "INSULA Cushion"
