@@ -8,16 +8,21 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
-  title: "INSULA | Mỹ phẩm hữu cơ & Thiên nhiên cao cấp",
-  description: "Khám phá bộ sưu tập mỹ phẩm hữu cơ INSULA - Tự nhiên, lành tính và mang lại vẻ đẹp thuần khiết cho làn da bạn. Chăm sóc sắc đẹp bền vững từ tinh túy đất trời.",
-  keywords: ["mỹ phẩm hữu cơ", "my pham thien nhien", "insula", "skincare organic", "làm đẹp tự nhiên"],
+  title: "INSULA | Thương hiệu mỹ phẩm thiên nhiên cao cấp",
+  description: "INSULA chuyên cung cấp các dòng mỹ phẩm làm đẹp, nổi bật với INSULA Cushion che phủ hoàn hảo, mỏng nhẹ tự nhiên. Khám phá ngay!",
+  keywords: [
+    "insula",
+    "insula mỹ phẩm",
+    "mỹ phẩm insula",
+    "insula cushion",
+    "cushion insula",
+    "mỹ phẩm thiên nhiên"
+  ],
   referrer: "no-referrer",
   openGraph: {
-    title: "INSULA | Mỹ phẩm hữu cơ & Thiên nhiên cao cấp",
-    description: "Đánh thức vẻ đẹp tự nhiên với dòng mỹ phẩm hữu cơ thuần khiết nhất.",
-    url: "https://yuna-cosmetics.vercel.app",
+    title: "INSULA | Thương hiệu mỹ phẩm thiên nhiên cao cấp",
+    description: "INSULA chuyên cung cấp các dòng mỹ phẩm làm đẹp, nổi bật với INSULA Cushion che phủ hoàn hảo, mỏng nhẹ tự nhiên. Khám phá ngay!",
     siteName: "INSULA",
-    locale: "vi_VN",
     type: "website",
     images: [
       {
@@ -30,8 +35,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "INSULA | Mỹ phẩm hữu cơ & Thiên nhiên cao cấp",
-    description: "Đánh thức vẻ đẹp tự nhiên với dòng mỹ phẩm hữu cơ thuần khiết nhất.",
+    title: "INSULA | Thương hiệu mỹ phẩm thiên nhiên cao cấp",
+    description: "INSULA chuyên cung cấp các dòng mỹ phẩm làm đẹp, nổi bật với INSULA Cushion che phủ hoàn hảo, mỏng nhẹ tự nhiên. Khám phá ngay!",
     images: ["/products/meo1.png"],
   },
   icons: {
