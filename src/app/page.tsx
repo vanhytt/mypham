@@ -534,7 +534,7 @@ export default function Home() {
             </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {[
-                { icon: <Leaf size={32} />, title: "Che phủ tự nhiên", desc: "Không kích ứng da, an toàn và lành tính cho mọi loại da nhạy cảm nhất." },
+                { icon: <Leaf size={32} />, title: "Tôn vinh bản sắc riêng", desc: "Tôn vinh những nét đẹp sẵn có, mang lại sự tự tin từ sâu bên trong mỗi làn da." },
                 { icon: <Heart size={32} />, title: "Cruelty-Free", desc: "Cam kết không thử nghiệm trên động vật trong toàn bộ quá trình nghiên cứu và sản xuất." },
                 { icon: <ShieldCheck size={32} />, title: "Chất Lượng Vượt Trội", desc: "Được kiểm chứng lâm sàng đem lại hiệu quả rõ rệt sau 4 tuần sử dụng đều đặn." },
               ].map((item, i) => (
