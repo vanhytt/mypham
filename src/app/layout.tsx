@@ -10,36 +10,25 @@ const playfair = Playfair_Display({ subsets: ["vietnamese"], variable: "--font-p
 const DynamicFloatingContact = dynamic(() => import("@/components/FloatingContact"), { ssr: false });
 
 export const metadata: Metadata = {
-  title: "INSULA | Thương hiệu mỹ phẩm thiên nhiên cao cấp",
-  description: "INSULA chuyên cung cấp các dòng mỹ phẩm làm đẹp, nổi bật với INSULA Cushion che phủ hoàn hảo, mỏng nhẹ tự nhiên. Khám phá ngay!",
-  keywords: [
-    "insula",
-    "insula mỹ phẩm",
-    "mỹ phẩm insula",
-    "insula cushion",
-    "cushion insula",
-    "mỹ phẩm thiên nhiên"
-  ],
-  referrer: "no-referrer",
+  title: "INSULA | Vẻ đẹp nguyên bản",
+  description: "Cushion cao cấp giúp che phủ hoàn hảo và tôn vinh làn da của bạn.",
   openGraph: {
-    title: "INSULA | Thương hiệu mỹ phẩm thiên nhiên cao cấp",
-    description: "INSULA chuyên cung cấp các dòng mỹ phẩm làm đẹp, nổi bật với INSULA Cushion che phủ hoàn hảo, mỏng nhẹ tự nhiên. Khám phá ngay!",
-    siteName: "INSULA",
-    type: "website",
+    title: "INSULA | Vẻ đẹp nguyên bản",
+    description: "Cushion cao cấp giúp che phủ hoàn hảo và tôn vinh làn da của bạn.",
+    url: "https://insula.vn",
     images: [
       {
         url: "/products/meo1.png",
         width: 1200,
         height: 630,
-        alt: "INSULA Cosmetics"
+        alt: "INSULA Cushion"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "INSULA | Thương hiệu mỹ phẩm thiên nhiên cao cấp",
-    description: "INSULA chuyên cung cấp các dòng mỹ phẩm làm đẹp, nổi bật với INSULA Cushion che phủ hoàn hảo, mỏng nhẹ tự nhiên. Khám phá ngay!",
-    images: ["/products/meo1.png"],
+    title: "INSULA | Vẻ đẹp nguyên bản",
+    description: "Cushion cao cấp giúp che phủ hoàn hảo và tôn vinh làn da của bạn.",
   },
   icons: {
     icon: "/icon.png",
