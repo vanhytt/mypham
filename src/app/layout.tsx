@@ -58,7 +58,7 @@ export default function RootLayout({
         {/* Background is handled cleanly by globals.css without watermark */}
         {children}
         <DynamicFloatingContact />
-        <GoogleAnalytics gaId="G-N1F4KK2M03" />
+        <GoogleAnalytics gaId="G-N1F4KK2M03" strategy="lazyOnload" />
       </body>
     </html>
   );
