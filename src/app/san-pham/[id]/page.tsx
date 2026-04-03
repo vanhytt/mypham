@@ -8,23 +8,19 @@ interface Props {
 }
 
 async function getProduct(id: string) {
-  // Try "Sản phẩm" table first (Home page products)
-  const { data: p1 } = await supabase
-    .from("Sản phẩm")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (p1) return p1;
-
-  // Try "list" table (Product list page products)
-  const { data: p2 } = await supabase
+  // Use "list" table as the primary source for all products
+  const { data, error } = await supabase
     .from("list")
     .select("*")
     .eq("id", id)
     .single();
 
-  return p2;
+  if (error) {
+    console.error("Error fetching product from 'list':", error);
+    return null;
+  }
+
+  return data;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -37,9 +33,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const name = product.Name || product.ten_sp || "Sản phẩm";
+  const name = product.ten_sp || "Sản phẩm";
   const desc = product.mo_ta || "Khám phá sản phẩm làm đẹp từ thiên nhiên cao cấp tại INSULA.";
-  const image = product.image_url || product.anh_url || "/og-image.png";
+  const image = product.anh_url || "/og-image.png";
 
   return {
     title: `${name} - INSULA | Mỹ Phẩm Thiên Nhiên`,

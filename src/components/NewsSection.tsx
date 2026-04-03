@@ -1,0 +1,122 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { ArrowRight, CalendarDays } from "lucide-react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  image_url: string;
+  created_at: string;
+}
+
+export default function NewsSection() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchLatestPosts() {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (!error && data) {
+        setPosts(data);
+      }
+      setLoading(false);
+    }
+    
+    fetchLatestPosts();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="w-full py-24 bg-[#F8FAFC]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-24 flex justify-center">
+          <div className="w-8 h-8 border-2 border-[#1A365D] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </section>
+    );
+  }
+
+  // Nếu chưa có post nào thì không hiển thị section này
+  if (posts.length === 0) return null;
+
+  return (
+    <section className="w-full px-6 py-24 relative" id="Tin tức">
+      <div className="max-w-7xl mx-auto bg-gradient-to-b from-white/0 via-white/20 to-white/40 rounded-[3rem] p-10 lg:p-16 border border-white/20 relative overflow-hidden backdrop-blur-[2px]">
+        {/* Soft Decorative Blobs - Inherited from vibe */}
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-100/30 rounded-full blur-3xl opacity-60 pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-pink-100/20 rounded-full blur-3xl opacity-60 pointer-events-none" />
+
+        <div className="relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 lg:mb-16 gap-6">
+            <div className="text-left">
+              <span className="text-xs uppercase tracking-[0.2em] text-[#4a7fb5] font-medium mb-3 block">Tin Tức & Sự Kiện</span>
+              <h2 className="text-3xl lg:text-4xl font-serif text-[#1A365D] tracking-tight">Câu chuyện vẻ đẹp</h2>
+            </div>
+            <Link href="/news" className="inline-flex items-center gap-2 text-sm font-medium text-[#1A365D] hover:text-[#4a7fb5] transition-colors group">
+              Xem tất cả bài viết 
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.map((post, index) => (
+              <motion.div 
+                key={post.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                className="bg-white rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-white group flex flex-col h-full"
+              >
+                <Link href={`/news/${encodeURIComponent(post.title)}`} className="block relative aspect-[16/10] overflow-hidden">
+                  {post.image_url ? (
+                    <img src={post.image_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  ) : (
+                    <div className="w-full h-full bg-gray-50 flex items-center justify-center">
+                      <span className="text-sm tracking-widest text-[#1A365D]/30 uppercase font-serif">INSULA</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </Link>
+                
+                <div className="p-8 flex flex-col flex-1">
+                  <div className="flex items-center gap-2 text-xs text-[#4a7fb5] mb-4">
+                    <CalendarDays size={14} />
+                    <span>{new Date(post.created_at).toLocaleDateString('vi-VN')}</span>
+                  </div>
+                  
+                  <Link href={`/news/${encodeURIComponent(post.title)}`} className="block group/title">
+                    <h3 className="text-xl font-serif text-[#1A365D] mb-4 line-clamp-2 leading-snug group-hover/title:text-[#4a7fb5] transition-colors">
+                      {post.title}
+                    </h3>
+                  </Link>
+                  
+                  <p className="text-[#4a7fb5]/80 text-sm line-clamp-3 leading-relaxed mb-8 font-light">
+                    {post.content.replace(/<[^>]+>/g, '').substring(0, 150)}...
+                  </p>
+
+                  <div className="mt-auto pt-5 border-t border-gray-50">
+                    <Link href={`/news/${encodeURIComponent(post.title)}`} className="inline-flex items-center text-sm font-semibold tracking-wide text-[#1A365D] hover:text-[#4a7fb5] transition-colors gap-1.5 group/btn">
+                      ĐỌC TIẾP
+                      <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

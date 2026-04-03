@@ -184,6 +184,9 @@ export default function ProductListingPage() {
             <span className="text-sm font-medium uppercase tracking-widest text-[#1A365D] border-b border-[#1A365D] pb-1">
               Sản phẩm
             </span>
+            <Link href="/news" className="text-sm font-medium uppercase tracking-widest text-[#1A365D]/70 hover:text-[#1A365D] transition-colors">
+              Tin tức
+            </Link>
           </div>
           <button
             className="md:hidden p-2 bg-[#A5C4E5]/20 rounded-full text-[#705E4C] hover:bg-[#A5C4E5]/40 transition-colors"

@@ -5,8 +5,8 @@ import { useState, useEffect, useRef } from "react";
 import { Leaf, Heart, ShieldCheck, ArrowRight, Menu, X, Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
-
 import Link from "next/link";
+import NewsSection from "@/components/NewsSection";
 
 const navItems = [
   {
@@ -32,6 +32,11 @@ const navItems = [
       { label: "Triết lý", href: "/#Về chúng tôi" },
       { label: "Thành phần tự nhiên", href: "/#Về chúng tôi" },
     ],
+  },
+  {
+    label: "Tin tức",
+    href: "/news",
+    dropdown: null,
   },
   {
     label: "Hệ thống",
@@ -111,9 +116,9 @@ function NavItem({ item }: { item: (typeof navItems)[0] }) {
 
 interface Product {
   id?: string | number;
-  Name?: string;
+  ten_sp?: string;
   gia?: number;
-  image_url?: string;
+  anh_url?: string;
   anh1?: string;
   anh2?: string;
   anh3?: string;
@@ -142,13 +147,13 @@ export default function Home() {
         setErrorMsg(null);
 
         const { data, error } = await supabase
-          .from("Sản phẩm")
+          .from("list")
           .select("*")
           .order("id", { ascending: true });
 
         console.log("Supabase Data fetched:", data);
         if (error) {
-          console.error("Error fetching products from 'Sản phẩm':", error);
+          console.error("Error fetching products from 'list':", error);
           setErrorMsg("Lỗi kết nối Database");
         } else if (data) {
           setAllProducts(data);
@@ -463,10 +468,10 @@ export default function Home() {
                   >
                     {/* Image container */}
                     <div className="relative w-full aspect-square overflow-hidden bg-[#A5C4E5]/20 backdrop-blur-xl border-b border-white/50">
-                      {product.image_url ? (
+                      {product.anh_url ? (
                         <Image
-                          src={product.image_url}
-                          alt={product.Name || 'Sản phẩm INSULA'}
+                          src={product.anh_url}
+                          alt={product.ten_sp || 'Sản phẩm INSULA'}
                           width={400}
                           height={400}
                           className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
@@ -488,7 +493,7 @@ export default function Home() {
                     {/* Card body */}
                     <div className="flex flex-col flex-1 p-6">
                       <h3 className="font-serif text-lg text-[#1A365D] font-semibold leading-snug mb-1.5 group-hover:text-[#2B547E] transition-colors duration-300 line-clamp-2">
-                        {product.Name || 'Sản phẩm'}
+                        {product.ten_sp || 'Sản phẩm'}
                       </h3>
                       {product.mo_ta && (
                         <p className="text-sm text-[#4a7fb5] font-light line-clamp-2 leading-relaxed mt-1">
@@ -520,6 +525,9 @@ export default function Home() {
             )}
           </div>
         </section>
+
+        {/* ─── NEWS SECTION ────────────────────────────────────────── */}
+        <NewsSection />
 
         {/* ─── BRAND STORY ──────────────────────────────────────── */}
         <section className="w-full px-6 py-28" id="Về chúng tôi">
@@ -627,8 +635,8 @@ export default function Home() {
             </div>
           </div>
         </section>
-
       </main>
+
 
 
       {/* ─── FOOTER ────────────────────────────────────────────── */}
