@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Phone } from "lucide-react";
 
-const PHONE_NUMBER = "0834002603";
+const PHONE_NUMBER = "Liên hệ với chúng tôi - 0834002603";
 
 export default function FloatingContact() {
   const [hovered, setHovered] = useState(false);
@@ -36,17 +36,16 @@ export default function FloatingContact() {
       `}</style>
 
       <div
-        // Chỉnh bottom-10 để nhích lên trên một chút (thay vì bottom-6)
-        className="fixed bottom-12 right-6 z-50 flex items-center floating-animation"
+        // Đẩy nút điện thoại lên cao hẳn (140px) để không bị Crisp che khuất
+        className="fixed bottom-[140px] right-6 z-50 flex items-center floating-animation"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         style={{ userSelect: "none" }}
       >
         {/* Label hiển thị số điện thoại */}
         <span
-          className={`transition-all duration-300 bg-white text-[#1A365D] font-bold rounded-full shadow-lg px-5 py-2 mr-3 whitespace-nowrap select-none border border-[#1A365D]/10 ${
-            hovered && !isMobile ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4 pointer-events-none"
-          }`}
+          className={`transition-all duration-300 bg-white text-[#1A365D] font-bold rounded-full shadow-lg px-5 py-2 mr-3 whitespace-nowrap select-none border border-[#1A365D]/10 ${hovered && !isMobile ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4 pointer-events-none"
+            }`}
         >
           {PHONE_NUMBER}
         </span>

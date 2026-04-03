@@ -60,6 +60,23 @@ export default function RootLayout({
             gtag('config', 'G-N1F4KK2M03');
           `}
         </Script>
+        <Script id="crisp-chat" strategy="lazyOnload">
+          {`
+            window.$crisp=[];
+            window.CRISP_WEBSITE_ID="18105cda-2c38-415d-bfac-7afb0e756a1e";
+            
+            // Cấu hình mã màu Crisp (để vị trí mặc định)
+            window.$crisp.push(["set", "chat:color", "#1A365D"]);
+
+            (function(){
+              d=document;
+              s=d.createElement("script");
+              s.src="https://client.crisp.chat/l.js";
+              s.async=1;
+              d.getElementsByTagName("head")[0].appendChild(s);
+            })();
+          `}
+        </Script>
       </body>
     </html>
   );
