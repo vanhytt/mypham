@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
+
+const supabase = createClient();
 
 interface Post {
   id: number;
@@ -17,7 +20,6 @@ interface Post {
 export default function NewsSection() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
     async function fetchLatestPosts() {
@@ -80,7 +82,7 @@ export default function NewsSection() {
               >
                 <Link href={`/news/${encodeURIComponent(post.title)}`} className="block relative aspect-[16/10] overflow-hidden">
                   {post.image_url ? (
-                    <img src={post.image_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <Image src={post.image_url} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                   ) : (
                     <div className="w-full h-full bg-gray-50 flex items-center justify-center">
                       <span className="text-sm tracking-widest text-[#1A365D]/30 uppercase font-serif">INSULA</span>
