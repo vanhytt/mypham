@@ -9,6 +9,10 @@
 body {
   color: var(--foreground);
   min-height: 100dvh;
+  /* GPU compositing: ngăn nháy trắng khi cuộn nhanh trên mobile */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari */
   background:
     radial-gradient(ellipse at 15% 55%,  #E0E7FF 0%, transparent 55%),
     radial-gradient(ellipse at 80% 15%,  #FCE7F3 0%, transparent 55%),
@@ -16,7 +20,24 @@ body {
     radial-gradient(ellipse at 38% 10%,  #F3E8FF 0%, transparent 50%),
     radial-gradient(ellipse at 90% 70%,  #FDE8F0 0%, transparent 50%),
     #EEF2FF;
-  background-attachment: fixed;
+  /* Mobile: scroll để tránh iOS Safari repaint toàn trang mỗi frame */
+  background-attachment: scroll;
+}
+
+/* Desktop (non-touch): dùng fixed để nền gradient không di chuyển khi scroll */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    background-attachment: fixed;
+  }
+}
+
+/* ─── Section GPU Compositing ───────────────────────────────────────────────
+   Thêm will-change: transform vào main và section để ép browser
+   tạo composite layer riêng cho từng section — hết nháy khi scroll.
+─────────────────────────────────────────────────────────────────────────── */
+main,
+section {
+  will-change: transform;
 }
 
 /* ─── Mobile Layout Shift Optimization ─────────────────────────────────────

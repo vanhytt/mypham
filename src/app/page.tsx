@@ -481,6 +481,7 @@ export default function Home() {
                           height={400}
                           className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
                           quality={75}
+                          priority={idx < 3}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
