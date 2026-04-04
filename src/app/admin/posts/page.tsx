@@ -14,18 +14,27 @@ interface Post {
   created_at: string;
 }
 
-// Helper: Chuyển đổi chuỗi thành slug
+// Helper: Chuyển đổi chuỗi thành slug tiếng Việt chuẩn
 const slugify = (str: string) => {
   if (!str) return "";
-  return String(str)
-    .normalize('NFKD') 
-    .replace(/[\u0300-\u036f]/g, '') 
-    .trim() 
-    .toLowerCase() 
-    .replace(/đ/g, 'd').replace(/Đ/g, 'd') 
-    .replace(/[^a-z0-9 -]/g, '') 
-    .replace(/\s+/g, '-') 
-    .replace(/-+/g, '-');
+  let slug = str.toLowerCase();
+  // Đổi ký tự có dấu thành không dấu
+  slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+  slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+  slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+  slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+  slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+  slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+  slug = slug.replace(/đ/gi, 'd');
+  // Xóa các ký tự đặc biệt
+  slug = slug.replace(/[^a-z0-9 -]/g, '');
+  // Thay khoảng trắng thành dấu gạch ngang
+  slug = slug.replace(/\s+/g, '-');
+  // Xóa các dấu gạch ngang liên tiếp
+  slug = slug.replace(/-+/g, '-');
+  // Trim dấu gạch ngang ở đầu và cuối
+  slug = slug.replace(/^-+|-+$/g, '');
+  return slug;
 };
 
 // Helper: Tách lấy đuôi file
