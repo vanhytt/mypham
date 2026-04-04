@@ -432,7 +432,11 @@ export default function Home() {
         </section>
 
         {/* ─── FEATURED PRODUCTS ─────────────────────────────────── */}
-        <section className="w-full px-6 py-28" id="Sản phẩm">
+        <section
+          className="w-full px-6 py-28"
+          id="Sản phẩm"
+          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}
+        >
           <div className="max-w-6xl mx-auto">
             {/* Section header */}
             <motion.div
@@ -531,7 +535,11 @@ export default function Home() {
         <NewsSection />
 
         {/* ─── BRAND STORY ──────────────────────────────────────── */}
-        <section className="w-full px-6 py-28" id="Về chúng tôi">
+        <section
+          className="w-full px-6 py-28"
+          id="Về chúng tôi"
+          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}
+        >
           <div className="max-w-5xl mx-auto text-center">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -567,7 +575,11 @@ export default function Home() {
         </section>
 
         {/* ─── LEAD FORM ─────────────────────────────────────────── */}
-        <section className="w-full px-6 py-28" id="Hệ thống">
+        <section
+          className="w-full px-6 py-28"
+          id="Hệ thống"
+          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 700px' }}
+        >
           <div className="max-w-4xl mx-auto bg-white/30 backdrop-blur-xl rounded-3xl p-10 lg:p-16 shadow-[0_8px_40px_rgba(139,92,246,0.15)] relative overflow-hidden border border-white/50">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#E0E7FF] to-[#FCE7F3] rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2" />
 
