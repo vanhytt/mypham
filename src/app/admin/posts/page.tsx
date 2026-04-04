@@ -8,10 +8,25 @@ import Image from "next/image";
 interface Post {
   id: number;
   title: string;
+  slug: string;
   content: string;
   image_url: string;
   created_at: string;
 }
+
+// Helper: Chuyển đổi chuỗi thành slug
+const slugify = (str: string) => {
+  if (!str) return "";
+  return String(str)
+    .normalize('NFKD') 
+    .replace(/[\u0300-\u036f]/g, '') 
+    .trim() 
+    .toLowerCase() 
+    .replace(/đ/g, 'd').replace(/Đ/g, 'd') 
+    .replace(/[^a-z0-9 -]/g, '') 
+    .replace(/\s+/g, '-') 
+    .replace(/-+/g, '-');
+};
 
 // Helper: Tách lấy đuôi file
 const getFileExt = (fileName: string) => {
@@ -29,6 +44,7 @@ export default function AdminPostsPage() {
   // States for form
   const [formData, setFormData] = useState<Partial<Post>>({
     title: "",
+    slug: "",
     content: "",
   });
 
@@ -67,6 +83,7 @@ export default function AdminPostsPage() {
       setEditingPost(null);
       setFormData({
         title: "",
+        slug: "",
         content: "",
       });
       setImage(null);
@@ -129,8 +146,11 @@ export default function AdminPostsPage() {
     try {
       const finalImageUrl = await uploadImageToSupabase();
       
+      const generatedSlug = formData.slug?.trim() ? slugify(formData.slug) : slugify(formData.title || "");
+      
       const payload: Partial<Post> = {
         ...formData,
+        slug: generatedSlug,
         image_url: finalImageUrl,
       };
 
@@ -296,6 +316,12 @@ export default function AdminPostsPage() {
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-1.5">Tiêu đề bài viết *</label>
                       <input type="text" name="title" required value={formData.title || ""} onChange={handleChange} placeholder="Khám phá bộ sưu tập..."
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1A365D]/30 focus:border-[#1A365D] bg-gray-50/50" />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">Đường dẫn tĩnh (Slug)</label>
+                      <input type="text" name="slug" value={formData.slug || ""} onChange={handleChange} placeholder="Để trống để tự động tạo từ tiêu đề..."
                         className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1A365D]/30 focus:border-[#1A365D] bg-gray-50/50" />
                     </div>
 
