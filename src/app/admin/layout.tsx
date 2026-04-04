@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Package, FileText, LogOut, Settings } from "lucide-react";
+import { Package, FileText, LogOut } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
