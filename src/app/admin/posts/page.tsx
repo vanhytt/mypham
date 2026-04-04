@@ -146,11 +146,36 @@ export default function AdminPostsPage() {
     try {
       const finalImageUrl = await uploadImageToSupabase();
       
-      const generatedSlug = formData.slug?.trim() ? slugify(formData.slug) : slugify(formData.title || "");
+      const baseSlug = formData.slug?.trim() ? slugify(formData.slug) : slugify(formData.title || "");
+      let finalSlug = baseSlug;
+
+      if (!baseSlug) {
+        throw new Error("Vui lòng nhập tiêu đề bài viết để có thể tự động tạo đường dẫn.");
+      }
+      
+      // Xử lý trùng lặp slug trong CSDL
+      if (!editingPost || editingPost.slug !== finalSlug) {
+        let isDuplicate = true;
+        let counter = 1;
+        while (isDuplicate) {
+          const { data: existing } = await supabase
+            .from("posts")
+            .select("id")
+            .eq("slug", finalSlug)
+            .maybeSingle();
+
+          if (existing) {
+             finalSlug = `${baseSlug}-${counter}`;
+             counter++;
+          } else {
+             isDuplicate = false;
+          }
+        }
+      }
       
       const payload: Partial<Post> = {
         ...formData,
-        slug: generatedSlug,
+        slug: finalSlug,
         image_url: finalImageUrl,
       };
 
