@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["vietnamese"], variable: "--font-inter", display: "swap" });
 const playfair = Playfair_Display({ subsets: ["vietnamese"], variable: "--font-playfair", display: "swap" });
@@ -50,6 +51,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         {/* Background is handled cleanly by globals.css without watermark */}
         {children}
+        <Analytics />
         <DynamicFloatingContact />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=G-N1F4KK2M03`}
