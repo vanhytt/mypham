@@ -14,6 +14,7 @@ const supabase = createClient();
 interface Post {
   id: number;
   title: string;
+  slug: string;
   content: string;
   image_url: string;
   created_at: string;
@@ -71,7 +72,7 @@ export default function NewsListPage() {
                 transition={{ delay: index * 0.05, duration: 0.5 }}
                 className="bg-white rounded-[2rem] overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 border border-white/60 group flex flex-col h-full"
               >
-                <Link href={`/news/${encodeURIComponent(post.title)}`} className="block relative aspect-[16/10] overflow-hidden">
+                <Link href={`/news/${post.slug}`} className="block relative aspect-[16/10] overflow-hidden">
                   {post.image_url ? (
                     <Image
                       src={post.image_url}
@@ -96,7 +97,7 @@ export default function NewsListPage() {
                     <span>{new Date(post.created_at).toLocaleDateString('vi-VN')}</span>
                   </div>
                   
-                  <Link href={`/news/${encodeURIComponent(post.title)}`} className="block group/title">
+                  <Link href={`/news/${post.slug}`} className="block group/title">
                     <h3 className="text-xl font-serif text-[#1A365D] mb-3 line-clamp-2 leading-snug group-hover/title:text-[#4a7fb5] transition-colors">
                       {post.title}
                     </h3>
@@ -107,7 +108,7 @@ export default function NewsListPage() {
                   </p>
 
                   <div className="mt-auto pt-4 border-t border-gray-100">
-                    <Link href={`/news/${encodeURIComponent(post.title)}`} className="inline-flex items-center text-sm font-semibold tracking-wide text-[#1A365D] hover:text-[#4a7fb5] transition-colors gap-1.5 group/btn">
+                    <Link href={`/news/${post.slug}`} className="inline-flex items-center text-sm font-semibold tracking-wide text-[#1A365D] hover:text-[#4a7fb5] transition-colors gap-1.5 group/btn">
                       ĐỌC TIẾP
                       <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                     </Link>

@@ -7,18 +7,17 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 interface Props {
-  params: Promise<{ title: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { title } = await params;
-  const decodedTitle = decodeURIComponent(title);
+  const { slug } = await params;
   
   const supabase = createClient();
   const { data: post } = await supabase
     .from("posts")
-    .select("title, content, image_url")
-    .eq("title", decodedTitle)
+    .select("title, slug, content, image_url")
+    .eq("slug", slug)
     .single();
 
   if (!post) {
@@ -36,16 +35,15 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function NewsDetailPage({ params }: Props) {
-  const { title } = await params;
-  const decodedTitle = decodeURIComponent(title);
+  const { slug } = await params;
 
   const supabase = createClient();
   
-  // Lấy dữ liệu bài viết
+  // Lấy dữ liệu bài viết theo slug
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .eq("title", decodedTitle)
+    .eq("slug", slug)
     .single();
 
   if (error || !post) {
@@ -116,7 +114,7 @@ export default async function NewsDetailPage({ params }: Props) {
               {relatedPosts.map(rp => (
                 <Link 
                   key={rp.id} 
-                  href={`/news/${encodeURIComponent(rp.title)}`} 
+                  href={`/news/${rp.slug}`} 
                   className="group flex flex-col bg-white/60 backdrop-blur-sm rounded-[2.5rem] p-6 shadow-sm hover:shadow-2xl transition-all duration-500 border border-white group-hover:-translate-y-2 h-full"
                 >
                   <div className="relative w-full aspect-[16/10] rounded-[2rem] overflow-hidden mb-6 shadow-md">

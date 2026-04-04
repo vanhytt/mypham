@@ -9,11 +9,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ── Fetch slugs bài viết tin tức từ Supabase ─────────────────────────────
   const { data: posts } = await supabase
     .from('posts')
-    .select('title, created_at')
+    .select('slug, created_at')
     .order('created_at', { ascending: false });
 
   const newsUrls: MetadataRoute.Sitemap = (posts ?? []).map((post) => ({
-    url: `${BASE_URL}/news/${encodeURIComponent(post.title)}`,
+    url: `${BASE_URL}/news/${post.slug}`,
     lastModified: new Date(post.created_at),
     changeFrequency: 'monthly',
     priority: 0.7,
