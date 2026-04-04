@@ -65,8 +65,20 @@ export default function RootLayout({
             window.$crisp=[];
             window.CRISP_WEBSITE_ID="18105cda-2c38-415d-bfac-7afb0e756a1e";
             
-            // Cấu hình mã màu Crisp (để vị trí mặc định)
+            // Cấu hình mã màu Crisp
             window.$crisp.push(["set", "chat:color", "#1A365D"]);
+
+            // Auto-reply: gửi 1 lần duy nhất trong suốt phiên truy cập
+            window.$crisp.push(["on", "message:send", function() {
+              if (sessionStorage.getItem("crisp_autoreplied")) return;
+              sessionStorage.setItem("crisp_autoreplied", "1");
+              setTimeout(function() {
+                window.$crisp.push(["do", "message:show", [
+                  "text",
+                  "Chào nàng, INSULA đã nhận được tin nhắn. Đợi em một chút để em hỗ trợ mình ngay nhé! 🌸"
+                ]]);
+              }, 5000);
+            }]);
 
             (function(){
               d=document;
