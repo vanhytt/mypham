@@ -7,10 +7,12 @@
 }
 
 /* Tắt Scroll Anchoring — ngăn browser tự điều chỉnh scroll position
-   khi thanh toolbar mobile hiện/ẩn, tránh giật 1 nhịp khi lướt */
+   khi thanh toolbar mobile hiện/ẩn, tránh giật 1 nhịp khi lướt
+   Background fallback: khớp màu nền gradient để chặn nháy trắng khi CSS chưa load */
 html,
 body {
   overflow-anchor: none;
+  background-color: #EEF2FF;
 }
 
 /* Mobile: hint browser chuẩn bị tài nguyên scroll trước — ĐÚNG target là

@@ -10,25 +10,28 @@ const playfair = Playfair_Display({ subsets: ["vietnamese"], variable: "--font-p
 const DynamicFloatingContact = dynamic(() => import("@/components/FloatingContact"), { ssr: false });
 
 export const metadata: Metadata = {
-  title: "INSULA | Vẻ đẹp nguyên bản",
-  description: "Cushion cao cấp giúp che phủ hoàn hảo và tôn vinh làn da của bạn.",
+  title: "INSULA - Vẻ đẹp nguyên bản",
+  description: "INSULA – Thương hiệu mỹ phẩm cao cấp thuần thiên nhiên. Cushion che phủ hoàn hảo, dưỡng da bền đẹp 24h. Cruelty-Free, được kiểm chứng lâm sàng.",
   metadataBase: new URL("https://insula.vn"),
   openGraph: {
-    title: "INSULA | Vẻ đẹp nguyên bản",
-    description: "Cushion cao cấp giúp che phủ hoàn hảo và tôn vinh làn da của bạn.",
+    title: "INSULA - Vẻ đẹp nguyên bản",
+    description: "INSULA – Thương hiệu mỹ phẩm cao cấp thuần thiên nhiên. Cushion che phủ hoàn hảo, dưỡng da bền đẹp 24h. Cruelty-Free, được kiểm chứng lâm sàng.",
     url: "https://insula.vn",
+    siteName: "INSULA",
+    locale: "vi_VN",
+    type: "website",
     images: [
       {
         url: "https://insula.vn/products/meo1.png",
         width: 1200,
         height: 630,
-        alt: "INSULA Cushion"
+        alt: "INSULA – Mỹ phẩm thiên nhiên cao cấp"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "INSULA | Vẻ đẹp nguyên bản",
+    title: "INSULA - Vẻ đẹp nguyên bản",
     description: "Cushion cao cấp giúp che phủ hoàn hảo và tôn vinh làn da của bạn.",
   },
   icons: {
@@ -43,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="vi" style={{ backgroundColor: '#EEF2FF' }}>
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         {/* Background is handled cleanly by globals.css without watermark */}
         {children}
@@ -65,20 +68,7 @@ export default function RootLayout({
             window.$crisp=[];
             window.CRISP_WEBSITE_ID="18105cda-2c38-415d-bfac-7afb0e756a1e";
             
-            // Cấu hình mã màu Crisp
             window.$crisp.push(["set", "chat:color", "#1A365D"]);
-
-            // Auto-reply: gửi 1 lần duy nhất trong suốt phiên truy cập
-            window.$crisp.push(["on", "message:send", function() {
-              if (sessionStorage.getItem("crisp_autoreplied")) return;
-              sessionStorage.setItem("crisp_autoreplied", "1");
-              setTimeout(function() {
-                window.$crisp.push(["do", "message:show", [
-                  "text",
-                  "Chào nàng, INSULA đã nhận được tin nhắn. Đợi em một chút để em hỗ trợ mình ngay nhé! 🌸"
-                ]]);
-              }, 5000);
-            }]);
 
             (function(){
               d=document;
