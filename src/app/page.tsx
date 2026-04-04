@@ -208,7 +208,7 @@ export default function Home() {
   const featuredDisplayProducts = allProducts.slice(0, 3);
 
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh" style={{ isolation: 'isolate' }}>
 
       {/* ─── NAVBAR ──────────────────────────────────────────────── */}
       <header
@@ -482,6 +482,7 @@ export default function Home() {
                           className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
                           quality={75}
                           priority={idx < 3}
+                          loading={idx < 3 ? 'eager' : 'lazy'}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">

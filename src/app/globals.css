@@ -6,13 +6,17 @@
   --foreground: #1A365D;
 }
 
+/* Mobile: hint browser chuẩn bị tài nguyên scroll trước — ĐÚNG target là
+   html/body (scroll container), KHÔNG phải section (phá position:fixed) */
+@media (max-width: 768px) {
+  html {
+    will-change: scroll-position;
+  }
+}
+
 body {
   color: var(--foreground);
   min-height: 100dvh;
-  /* GPU compositing: ngăn nháy trắng khi cuộn nhanh trên mobile */
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden; /* Safari */
   background:
     radial-gradient(ellipse at 15% 55%,  #E0E7FF 0%, transparent 55%),
     radial-gradient(ellipse at 80% 15%,  #FCE7F3 0%, transparent 55%),
@@ -24,25 +28,17 @@ body {
   background-attachment: scroll;
 }
 
-/* Desktop (non-touch): dùng fixed để nền gradient không di chuyển khi scroll */
+/* Desktop (non-touch): dùng fixed để nền gradient parallax */
 @media (hover: hover) and (pointer: fine) {
   body {
     background-attachment: fixed;
   }
 }
 
-/* ─── Section GPU Compositing ───────────────────────────────────────────────
-   Thêm will-change: transform vào main và section để ép browser
-   tạo composite layer riêng cho từng section — hết nháy khi scroll.
-─────────────────────────────────────────────────────────────────────────── */
-main,
-section {
-  will-change: transform;
-}
-
 /* ─── Mobile Layout Shift Optimization ─────────────────────────────────────
-   Khi thanh toolbar của browser hiện/ẩn trên mobile, tất cả fixed
-   elements sẽ trượt mượt mà thay vì giật cục (Layout Shift).
+   Chỉ áp dụng will-change cho chính các fixed element — KHÔNG áp dụng
+   cho element cha (body/main/section) vì sẽ tạo stacking context mới,
+   phá vỡ position: fixed khiến nút bị "mất neo" khỏi viewport.
 ─────────────────────────────────────────────────────────────────────────── */
 .fixed {
   will-change: transform, bottom;

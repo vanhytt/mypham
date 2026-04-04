@@ -390,6 +390,7 @@ export default function ProductListingPage() {
                         height={400}
                         className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
                         priority={idx < 3}
+                        loading={idx < 3 ? 'eager' : 'lazy'}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">

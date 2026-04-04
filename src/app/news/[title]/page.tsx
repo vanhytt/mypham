@@ -91,6 +91,7 @@ export default async function NewsDetailPage({ params }: Props) {
                 fill 
                 className="object-cover"
                 priority
+                loading="eager"
               />
             </div>
           )}
