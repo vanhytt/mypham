@@ -22,11 +22,12 @@ export default function FloatingContact() {
 
   return (
     <>
-      {/* Thêm style CSS để tạo hiệu ứng bay bổng */}
+      {/* Animation keyframes — tách riêng outer (vị trí) và inner (hiệu ứng)
+          để 2 transform không ghi đè nhau */}
       <style jsx>{`
         @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
+          0%   { transform: translateY(0px); }
+          50%  { transform: translateY(-10px); }
           100% { transform: translateY(0px); }
         }
         .floating-animation {
@@ -35,25 +36,35 @@ export default function FloatingContact() {
         }
       `}</style>
 
+      {/*
+        Outer: neo position: fixed; bottom=0 rồi dùng translateY(-140px) để
+        đẩy lên. translateY chạy trên GPU compositor thread → không gây
+        Layout/Reflow khi Resize Event xảy ra (toolbar hiện/ẩn).
+        contain: layout style → cô lập component, trang không phải rerender
+        khi nút này di chuyển.
+      */}
       <div
-        // Đẩy nút điện thoại lên cao (140px) và tối ưu dvh để tránh nhảy giật trên mobile
-        className="fixed right-6 z-50 flex items-center floating-animation"
-        style={{ 
-          userSelect: "none", 
-          bottom: "clamp(120px, 15dvh, 160px)",
-          willChange: "transform, bottom",
-          transition: "bottom 0.3s ease-out",
+        className="fixed right-6 z-50"
+        style={{
+          bottom: 0,
+          transform: "translateY(-140px)",
+          transition: "transform 0.3s ease-out",
+          willChange: "transform",
+          contain: "layout style",
+          userSelect: "none",
         }}
       >
-        {/* Nút bấm tròn */}
-        <button
-          aria-label="Liên hệ qua điện thoại"
-          onClick={handleClick}
-          className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl bg-[#1A365D] hover:bg-[#162C4F] active:scale-90 transition-all duration-200 focus:outline-none"
-          style={{ boxShadow: "0 10px 25px -5px rgba(26, 54, 93, 0.4)" }}
-        >
-          <Phone size={28} className="text-white fill-white/10" />
-        </button>
+        {/* Inner: chỉ xử lý hiệu ứng float, transform riêng biệt */}
+        <div className="floating-animation">
+          <button
+            aria-label="Liên hệ qua điện thoại"
+            onClick={handleClick}
+            className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl bg-[#1A365D] hover:bg-[#162C4F] active:scale-90 transition-all duration-200 focus:outline-none"
+            style={{ boxShadow: "0 10px 25px -5px rgba(26, 54, 93, 0.4)" }}
+          >
+            <Phone size={28} className="text-white fill-white/10" />
+          </button>
+        </div>
       </div>
     </>
   );

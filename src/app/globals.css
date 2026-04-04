@@ -6,6 +6,13 @@
   --foreground: #1A365D;
 }
 
+/* Tắt Scroll Anchoring — ngăn browser tự điều chỉnh scroll position
+   khi thanh toolbar mobile hiện/ẩn, tránh giật 1 nhịp khi lướt */
+html,
+body {
+  overflow-anchor: none;
+}
+
 /* Mobile: hint browser chuẩn bị tài nguyên scroll trước — ĐÚNG target là
    html/body (scroll container), KHÔNG phải section (phá position:fixed) */
 @media (max-width: 768px) {
@@ -17,6 +24,8 @@
 body {
   color: var(--foreground);
   min-height: 100dvh;
+  /* Tạo GPU layer riêng cho nền gradient — an toàn, không phá position:fixed */
+  will-change: contents;
   background:
     radial-gradient(ellipse at 15% 55%,  #E0E7FF 0%, transparent 55%),
     radial-gradient(ellipse at 80% 15%,  #FCE7F3 0%, transparent 55%),
