@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import Link from "next/link";
@@ -21,22 +21,22 @@ export default function NewsSection() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchLatestPosts() {
-      const { data, error } = await supabase
-        .from("posts")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(3);
+  const fetchLatestPosts = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(3);
 
-      if (!error && data) {
-        setPosts(data);
-      }
-      setLoading(false);
+    if (!error && data) {
+      setPosts(data);
     }
-    
-    fetchLatestPosts();
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchLatestPosts();
+  }, [fetchLatestPosts]);
 
   if (loading) {
     return (

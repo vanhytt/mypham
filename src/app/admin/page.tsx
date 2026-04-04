@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Plus, Pencil, Trash2, Search, X, UploadCloud, XCircle } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import Image from "next/image";
 
 interface Product {
   id: number | string;
@@ -52,11 +53,7 @@ export default function AdminProductsPage() {
   const [uploadProgress, setUploadProgress] = useState("");
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("list")
@@ -69,7 +66,11 @@ export default function AdminProductsPage() {
       setProducts(data || []);
     }
     setLoading(false);
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleOpenModal = (product?: Product) => {
     if (product) {
@@ -123,7 +124,7 @@ export default function AdminProductsPage() {
     setImages(prev => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
-  const uploadImagesToSupabase = async () => {
+  const uploadImagesToSupabase = useCallback(async () => {
     const finalUrls: string[] = [];
     
     for (let i = 0; i < images.length; i++) {
@@ -138,7 +139,7 @@ export default function AdminProductsPage() {
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `products/${fileName}`;
 
-        const { data, error } = await supabase.storage
+        const { error } = await supabase.storage
           .from("product-images")
           .upload(filePath, item);
 
@@ -155,7 +156,7 @@ export default function AdminProductsPage() {
       }
     }
     return finalUrls;
-  };
+  }, [images, supabase.storage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -204,9 +205,10 @@ export default function AdminProductsPage() {
       
       handleCloseModal();
       fetchProducts();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errMsg = error instanceof Error ? error.message : "Có lỗi xảy ra khi lưu. Vui lòng thử lại!";
       console.error("Lỗi khi lưu sản phẩm:", error);
-      alert(error.message || "Có lỗi xảy ra khi lưu. Vui lòng thử lại!");
+      alert(errMsg);
     } finally {
       setSaving(false);
       setUploadProgress("");
@@ -285,9 +287,9 @@ export default function AdminProductsPage() {
                 filteredProducts.map((product) => (
                   <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-12 w-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden">
+                      <div className="h-12 w-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden relative">
                         {product.anh_url ? (
-                          <img src={product.anh_url} alt={product.ten_sp} className="h-full w-full object-cover" />
+                          <Image src={product.anh_url} alt={product.ten_sp} fill className="object-cover" />
                         ) : (
                           <div className="h-full w-full flex items-center justify-center text-xs">No img</div>
                         )}
@@ -400,7 +402,7 @@ export default function AdminProductsPage() {
                             
                             return (
                               <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-gray-200 group shadow-sm">
-                                <img src={imgSrc} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                                <Image src={imgSrc} alt={`Preview ${index}`} fill className="object-cover" />
                                 
                                 {/* Nút Xóa Ảnh */}
                                 <button

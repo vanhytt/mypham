@@ -30,8 +30,8 @@ export default function AdminLogin() {
       if (data.user) {
         window.location.href = "/admin"; // Use full reload to trigger middleware properly if needed, or router.push
       }
-    } catch (err: any) {
-      setError(err.message || "Đã có lỗi xảy ra");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Đã có lỗi xảy ra");
     } finally {
       setLoading(false);
     }

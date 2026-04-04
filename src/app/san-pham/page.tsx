@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Filter, X, Leaf, Star, CircleUser, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -120,40 +120,41 @@ export default function ProductListingPage() {
     }
   };
 
+  const fetchProducts = useCallback(async (isMounted: boolean) => {
+    if (!supabase) {
+      console.error("Chưa cấu hình biến môi trường Supabase!");
+      setErrorMsg("Chưa cấu hình biến môi trường Supabase!");
+      if (isMounted) setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setErrorMsg(null);
+      const { data, error } = await supabase
+        .from("list")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (error) {
+        console.error("Lỗi khi fetch dữ liệu từ Supabase:", error);
+        setErrorMsg("Lỗi kết nối Database");
+      } else if (data && isMounted) {
+        setProducts(data);
+      }
+    } catch (err) {
+      console.error("Có lỗi xảy ra trong quá trình kết nối Supabase:", err);
+      setErrorMsg("Lỗi kết nối Database");
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
-    async function fetchProducts() {
-      if (!supabase) {
-        console.error("Chưa cấu hình biến môi trường Supabase!");
-        setErrorMsg("Chưa cấu hình biến môi trường Supabase!");
-        if (isMounted) setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setErrorMsg(null);
-        const { data, error } = await supabase
-          .from("list")
-          .select("*")
-          .order("id", { ascending: true });
-
-        if (error) {
-          console.error("Lỗi khi fetch dữ liệu từ Supabase:", error);
-          setErrorMsg("Lỗi kết nối Database");
-        } else if (data && isMounted) {
-          setProducts(data);
-        }
-      } catch (err) {
-        console.error("Có lỗi xảy ra trong quá trình kết nối Supabase:", err);
-        setErrorMsg("Lỗi kết nối Database");
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    }
-    fetchProducts();
+    fetchProducts(isMounted);
     return () => { isMounted = false; };
-  }, []);
+  }, [fetchProducts]);
 
   const filteredProducts = products.filter(p => {
     const matchCategory = selectedCategory === "Tất cả" ? true : p.danh_muc === selectedCategory;

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Plus, Pencil, Trash2, Search, X, UploadCloud, XCircle } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import Image from "next/image";
 
 interface Post {
   id: number;
@@ -38,11 +39,7 @@ export default function AdminPostsPage() {
   const [uploadProgress, setUploadProgress] = useState("");
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("posts")
@@ -55,7 +52,11 @@ export default function AdminPostsPage() {
       setPosts(data || []);
     }
     setLoading(false);
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   const handleOpenModal = (post?: Post) => {
     if (post) {
@@ -94,7 +95,7 @@ export default function AdminPostsPage() {
     setImage(null);
   };
 
-  const uploadImageToSupabase = async (): Promise<string> => {
+  const uploadImageToSupabase = useCallback(async (): Promise<string> => {
     if (!image) return "";
     if (typeof image === 'string') return image;
 
@@ -104,7 +105,7 @@ export default function AdminPostsPage() {
     // Tạm dùng bucket product-images với thư mục posts/ để tránh phải tạo Bucket mới
     const filePath = `posts/${fileName}`;
 
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("product-images")
       .upload(filePath, image);
 
@@ -118,7 +119,7 @@ export default function AdminPostsPage() {
       .getPublicUrl(filePath);
 
     return publicUrlData.publicUrl;
-  };
+  }, [image, supabase.storage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,9 +155,10 @@ export default function AdminPostsPage() {
       
       handleCloseModal();
       fetchPosts();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errMsg = error instanceof Error ? error.message : "Có lỗi xảy ra khi lưu. Vui lòng thử lại!";
       console.error("Lỗi khi lưu bài viết:", error);
-      alert(error.message || "Có lỗi xảy ra khi lưu. Vui lòng thử lại!");
+      alert(errMsg);
     } finally {
       setSaving(false);
       setUploadProgress("");
@@ -236,9 +238,9 @@ export default function AdminPostsPage() {
                 filteredPosts.map((post) => (
                   <tr key={post.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="h-12 w-20 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0">
+                      <div className="h-12 w-20 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0 relative">
                         {post.image_url ? (
-                          <img src={post.image_url} alt={post.title} className="h-full w-full object-cover" />
+                          <Image src={post.image_url} alt={post.title} fill className="object-cover" />
                         ) : (
                           <div className="h-full w-full flex items-center justify-center text-gray-400 text-xs">Trống</div>
                         )}
@@ -320,10 +322,11 @@ export default function AdminPostsPage() {
                       </div>
                     ) : (
                       <div className="relative rounded-2xl overflow-hidden border border-gray-200 group shadow-sm h-64">
-                         <img 
+                         <Image 
                             src={typeof image === 'string' ? image : URL.createObjectURL(image)} 
                             alt="Preview banner" 
-                            className="w-full h-full object-cover" 
+                            fill
+                            className="object-cover" 
                           />
                           <button
                             type="button"

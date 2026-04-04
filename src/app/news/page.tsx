@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import Link from "next/link";
@@ -23,21 +23,22 @@ export default function NewsListPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchPosts() {
-      const { data, error } = await supabase
-        .from("posts")
-        .select("*")
-        .order("created_at", { ascending: false });
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-      if (!error && data) {
-        setPosts(data);
-      }
-      setLoading(false);
+    if (!error && data) {
+      setPosts(data);
     }
-    
-    fetchPosts();
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   return (
     <div className="min-h-screen">

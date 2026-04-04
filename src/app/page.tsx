@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Leaf, Heart, ShieldCheck, ArrowRight, Menu, X, Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
@@ -133,40 +133,41 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchProducts() {
-      if (!supabase) {
-        console.error("Chưa cấu hình biến môi trường Supabase!");
-        setErrorMsg("Chưa cấu hình biến môi trường Supabase!");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setErrorMsg(null);
-
-        const { data, error } = await supabase
-          .from("list")
-          .select("*")
-          .order("id", { ascending: true });
-
-        console.log("Supabase Data fetched:", data);
-        if (error) {
-          console.error("Error fetching products from 'list':", error);
-          setErrorMsg("Lỗi kết nối Database");
-        } else if (data) {
-          setAllProducts(data);
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        setErrorMsg("Lỗi kết nối Database");
-      } finally {
-        setLoading(false);
-      }
+  const fetchProducts = useCallback(async () => {
+    if (!supabase) {
+      console.error("Chưa cấu hình biến môi trường Supabase!");
+      setErrorMsg("Chưa cấu hình biến môi trường Supabase!");
+      setLoading(false);
+      return;
     }
-    fetchProducts();
+
+    try {
+      setLoading(true);
+      setErrorMsg(null);
+
+      const { data, error } = await supabase
+        .from("list")
+        .select("*")
+        .order("id", { ascending: true });
+
+      console.log("Supabase Data fetched:", data);
+      if (error) {
+        console.error("Error fetching products from 'list':", error);
+        setErrorMsg("Lỗi kết nối Database");
+      } else if (data) {
+        setAllProducts(data);
+      }
+    } catch (err: unknown) {
+      console.error("Unexpected error:", err);
+      setErrorMsg("Lỗi kết nối Database");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwrJuxPHtT0z1atVMDhh-tY3Cys7cRyV50-G2H1zzlYlmtjr8Mzp6agfEbnKGbOIEH4/exec';
   const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
