@@ -27,7 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+    <div className="flex h-dvh bg-gray-50 overflow-hidden font-sans">
       {/* Sidebar */}
       <div className="w-64 bg-white border-r border-gray-100 flex flex-col shadow-sm">
         <div className="h-20 flex items-center px-6 border-b border-gray-100">
@@ -70,7 +70,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col h-dvh overflow-hidden">
         {/* Header */}
         <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-8 shadow-sm shrink-0">
           <h2 className="text-xl font-bold text-[#1A365D] tracking-tight">

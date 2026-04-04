@@ -41,7 +41,7 @@ export default function NewsListPage() {
   }, [fetchPosts]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <Header />
 
       <main className="max-w-7xl mx-auto px-6 lg:px-24 pt-32 pb-16">

@@ -5,7 +5,6 @@ import { Phone } from "lucide-react";
 const PHONE_NUMBER = "Liên hệ với chúng tôi - 0834002603";
 
 export default function FloatingContact() {
-  const [hovered, setHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -32,24 +31,20 @@ export default function FloatingContact() {
         }
         .floating-animation {
           animation: float 3s ease-in-out infinite;
+          will-change: transform;
         }
       `}</style>
 
       <div
-        // Đẩy nút điện thoại lên cao hẳn (140px) để không bị Crisp che khuất
-        className="fixed bottom-[140px] right-6 z-50 flex items-center floating-animation"
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        style={{ userSelect: "none" }}
+        // Đẩy nút điện thoại lên cao (140px) và tối ưu dvh để tránh nhảy giật trên mobile
+        className="fixed right-6 z-50 flex items-center floating-animation"
+        style={{ 
+          userSelect: "none", 
+          bottom: "clamp(120px, 15dvh, 160px)",
+          willChange: "transform, bottom",
+          transition: "bottom 0.3s ease-out",
+        }}
       >
-        {/* Label hiển thị số điện thoại */}
-        <span
-          className={`transition-all duration-300 bg-white text-[#1A365D] font-bold rounded-full shadow-lg px-5 py-2 mr-3 whitespace-nowrap select-none border border-[#1A365D]/10 ${hovered && !isMobile ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4 pointer-events-none"
-            }`}
-        >
-          {PHONE_NUMBER}
-        </span>
-
         {/* Nút bấm tròn */}
         <button
           aria-label="Liên hệ qua điện thoại"

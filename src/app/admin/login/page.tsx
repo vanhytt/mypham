@@ -36,7 +36,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-dvh flex items-center justify-center bg-gray-50 p-4">
       <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl z-10 border border-gray-100">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-playfair font-bold text-[#1A365D] tracking-tight">INSULA Admin</h1>

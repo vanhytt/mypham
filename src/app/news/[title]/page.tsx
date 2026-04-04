@@ -61,7 +61,7 @@ export default async function NewsDetailPage({ params }: Props) {
     .limit(3);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-dvh relative overflow-hidden">
       <Header />
       
       {/* Background Decorator Blobs - Homage to homepage */}

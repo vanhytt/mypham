@@ -163,7 +163,7 @@ export default function ProductListingPage() {
   });
 
   return (
-    <div className="min-h-screen text-[#1A365D]">
+    <div className="min-h-dvh text-[#1A365D]">
       {/* Simple Navigation Header */}
       <header className="w-full bg-white/20 backdrop-blur-xl border-b border-white/40 shadow-sm py-4 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
@@ -473,7 +473,7 @@ export default function ProductListingPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.93, y: 24 }}
               transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="relative z-10 bg-[#FAF9F6]/90 backdrop-blur-2xl rounded-[1.5rem] shadow-2xl shadow-blue-500/10 w-[95%] sm:w-full max-w-5xl max-h-[90vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row border border-white/60"
+              className="relative z-10 bg-[#FAF9F6]/90 backdrop-blur-2xl rounded-[1.5rem] shadow-2xl shadow-blue-500/10 w-[95%] sm:w-full max-w-5xl max-h-[90dvh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row border border-white/60"
             >
               <button
                 onClick={() => setSelectedProduct(null)}

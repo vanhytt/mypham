@@ -275,7 +275,7 @@ export default function AdminPostsPage() {
       {/* Modal Thêm/Sửa */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+          <div className="flex items-center justify-center min-h-dvh px-4 pt-4 pb-20 text-center sm:p-0">
             <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" onClick={handleCloseModal}></div>
 
             <div className="relative inline-block w-full max-w-4xl p-6 my-8 text-left bg-white shadow-2xl rounded-2xl transform transition-all align-middle">
@@ -289,7 +289,7 @@ export default function AdminPostsPage() {
               </div>
 
               <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-[60dvh] overflow-y-auto pr-2 custom-scrollbar">
                   
                   {/* Cột trái: Thông tin text */}
                   <div className="space-y-5">

@@ -8,7 +8,7 @@
 
 body {
   color: var(--foreground);
-  min-height: 100vh;
+  min-height: 100dvh;
   background:
     radial-gradient(ellipse at 15% 55%,  #E0E7FF 0%, transparent 55%),
     radial-gradient(ellipse at 80% 15%,  #FCE7F3 0%, transparent 55%),
@@ -17,4 +17,13 @@ body {
     radial-gradient(ellipse at 90% 70%,  #FDE8F0 0%, transparent 50%),
     #EEF2FF;
   background-attachment: fixed;
+}
+
+/* ─── Mobile Layout Shift Optimization ─────────────────────────────────────
+   Khi thanh toolbar của browser hiện/ẩn trên mobile, tất cả fixed
+   elements sẽ trượt mượt mà thay vì giật cục (Layout Shift).
+─────────────────────────────────────────────────────────────────────────── */
+.fixed {
+  will-change: transform, bottom;
+  transition: bottom 0.3s ease-out;
 }

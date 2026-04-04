@@ -208,7 +208,7 @@ export default function Home() {
   const featuredDisplayProducts = allProducts.slice(0, 3);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
 
       {/* ─── NAVBAR ──────────────────────────────────────────────── */}
       <header
@@ -294,7 +294,7 @@ export default function Home() {
 
       <main>
         {/* ─── HERO SECTION ─────────────────────────────────────── */}
-        <section className="relative w-full min-h-screen flex items-center pt-24 pb-16 px-6 lg:px-24 overflow-hidden">
+        <section className="relative w-full min-h-dvh flex items-center pt-24 pb-16 px-6 lg:px-24 overflow-hidden">
 
           {/* Abstract background shapes */}
           <div className="absolute inset-0 pointer-events-none">

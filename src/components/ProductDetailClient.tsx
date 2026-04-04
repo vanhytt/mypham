@@ -100,7 +100,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-dvh bg-[#F8FAFC]">
       {/* Navigation Header */}
       <nav className="fixed top-0 left-0 w-full z-50 bg-white/70 backdrop-blur-md border-b border-[#A5C4E5]/20 px-4 md:px-8 py-4 flex items-center justify-between">
         <Link href="/san-pham" className="flex items-center gap-2 text-[#1A365D] hover:text-[#A5C4E5] transition-colors group">
@@ -112,7 +112,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       </nav>
 
       <main className="max-w-[1400px] mx-auto px-4 md:px-8 pt-24 pb-20">
-        <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-[#A5C4E5]/10 lg:flex lg:h-[calc(100vh-160px)] lg:min-h-[700px]">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-[#A5C4E5]/10 lg:flex lg:h-[calc(100dvh-160px)] lg:min-h-[700px]">
           
           <div className="lg:w-1/2 bg-[#F1F5F9] relative flex flex-col p-4 md:p-8">
             <div className="flex-1 min-h-[400px] md:min-h-[500px] relative rounded-3xl overflow-hidden shadow-inner bg-white/50 backdrop-blur-sm border border-white/50">
