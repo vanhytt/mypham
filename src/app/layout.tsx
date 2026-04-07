@@ -12,12 +12,13 @@ const DynamicFloatingContact = dynamic(() => import("@/components/FloatingContac
 import LayoutWrapper from "@/components/LayoutWrapper";
 
 export const metadata: Metadata = {
-  title: "INSULA - Vẻ đẹp nguyên bản",
-  description: "INSULA – Thương hiệu mỹ phẩm cao cấp thuần thiên nhiên. Cushion che phủ hoàn hảo, dưỡng da bền đẹp 24h. Cruelty-Free, được kiểm chứng lâm sàng.",
+  title: "INSULA - Mỹ phẩm thiên nhiên cao cấp | Vẻ đẹp nguyên bản",
+  description: "Khám phá INSULA – Thương hiệu mỹ phẩm cao cấp chiết xuất từ thiên nhiên. Cushion che phủ hoàn hảo, dưỡng da sáng mịn bền màu 24h. Trải nghiệm vẻ đẹp thuần khiết.",
+  keywords: ["mỹ phẩm", "insula", "chăm sóc da", "mỹ phẩm thiên nhiên", "skincare cao cấp", "cushion cao cấp", "mỹ phẩm thuần chay", "insula cushion", "insula mỹ phẩm", "insula chăm sóc da", "cushion phù hợp mọi loại da", "cushion che phủ hoàn hảo", "cushion dưỡng da sáng mịn bền màu 24h", "mỹ phẩm chăm sóc phù hợp mọi loại da", "mỹ phẩm thiên nhiên cao cấp"],
   metadataBase: new URL("https://insula.vn"),
   openGraph: {
-    title: "INSULA - Vẻ đẹp nguyên bản",
-    description: "INSULA – Thương hiệu mỹ phẩm cao cấp thuần thiên nhiên. Cushion che phủ hoàn hảo, dưỡng da bền đẹp 24h. Cruelty-Free, được kiểm chứng lâm sàng.",
+    title: "INSULA - Mỹ phẩm thiên nhiên cao cấp | Vẻ đẹp nguyên bản",
+    description: "Khám phá INSULA – Thương hiệu mỹ phẩm cao cấp chiết xuất từ thiên nhiên. Cushion che phủ hoàn hảo, dưỡng da sáng mịn bền màu 24h.",
     url: "https://insula.vn",
     siteName: "INSULA",
     locale: "vi_VN",
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "INSULA - Vẻ đẹp nguyên bản",
+    title: "INSULA - Mỹ phẩm thiên nhiên cao cấp",
     description: "Cushion cao cấp giúp che phủ hoàn hảo và tôn vinh làn da của bạn.",
   },
   icons: {

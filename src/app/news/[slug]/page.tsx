@@ -22,13 +22,26 @@ export async function generateMetadata({ params }: Props) {
     return { title: "Bài viết không tồn tại - INSULA" };
   }
 
+  const plainContent = post.content.replace(/<[^>]+>/g, '').substring(0, 160);
+
   return {
-    title: `${post.title} - INSULA Tin tức`,
-    description: post.content.replace(/<[^>]+>/g, '').substring(0, 160),
+    title: `${post.title} | Câu chuyện làm đẹp - INSULA`,
+    description: plainContent,
+    keywords: ["insula news", post.title.toLowerCase(), "bí quyết làm đẹp", "mỹ phẩm thiên nhiên"],
     openGraph: {
-      title: `${post.title} - INSULA Tin tức`,
-      images: post.image_url ? [{ url: post.image_url }] : [],
+      title: post.title,
+      description: plainContent,
+      url: `https://insula.vn/news/${post.slug}`,
+      siteName: "INSULA",
+      type: "article",
+      images: post.image_url ? [{ url: post.image_url, width: 1200, height: 630, alt: post.title }] : [],
     },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: plainContent,
+      images: post.image_url ? [post.image_url] : [],
+    }
   };
 }
 

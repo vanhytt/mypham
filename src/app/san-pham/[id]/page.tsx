@@ -36,15 +36,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const name = product.ten_sp || "Sản phẩm";
   const desc = product.mo_ta || "Khám phá sản phẩm làm đẹp từ thiên nhiên cao cấp tại INSULA.";
   const image = product.anh_url || "/og-image.png";
+  const plainDesc = desc.substring(0, 160);
 
   return {
-    title: `${name} - INSULA | Mỹ Phẩm Thiên Nhiên`,
-    description: desc.substring(0, 160),
+    title: `${name} | Mỹ phẩm thiên nhiên cao cấp - INSULA`,
+    description: plainDesc,
+    keywords: ["mỹ phẩm insula", name.toLowerCase(), "skincare cao cấp", "insula product"],
     openGraph: {
       title: `${name} - INSULA`,
-      description: desc.substring(0, 160),
-      images: [{ url: image }],
+      description: plainDesc,
+      url: `https://insula.vn/san-pham/${id}`,
+      siteName: "INSULA",
+      type: "website",
+      images: [{ url: image, width: 1200, height: 630, alt: name }],
     },
+    twitter: {
+      card: "summary_large_image",
+      title: name,
+      description: plainDesc,
+      images: [image],
+    }
   };
 }
 
