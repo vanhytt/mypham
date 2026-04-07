@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Phone } from "lucide-react";
 
-const PHONE_DISPLAY = "Gọi cho chúng tôi: 0834 002 603";
+const PHONE_DISPLAY = "Liên hệ với chúng tôi: 0834 002 603";
 const PHONE_RAW = "0834002603";
 
 export default function FloatingContact() {

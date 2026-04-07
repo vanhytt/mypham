@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Filter, X, Leaf, Star, CircleUser, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { X, Leaf, Star, CircleUser, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -164,39 +163,6 @@ export default function ProductListingPage() {
 
   return (
     <div className="min-h-dvh text-[#1A365D]">
-      {/* Simple Navigation Header */}
-      <header className="w-full bg-white/20 backdrop-blur-xl border-b border-white/40 shadow-sm py-4 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
-          <Link href="/">
-            <Image
-              src="/logo.png"
-              alt="INSULA Logo"
-              width={140}
-              height={44}
-              className="h-8 lg:h-11 w-auto object-contain"
-              style={{ filter: 'brightness(0)' }}
-              priority
-            />
-          </Link>
-          <div className="hidden md:flex gap-8">
-            <Link href="/" className="text-sm font-medium uppercase tracking-widest text-[#1A365D]/70 hover:text-[#1A365D] transition-colors">
-              Trang chủ
-            </Link>
-            <span className="text-sm font-medium uppercase tracking-widest text-[#1A365D] border-b border-[#1A365D] pb-1">
-              Sản phẩm
-            </span>
-            <Link href="/news" className="text-sm font-medium uppercase tracking-widest text-[#1A365D]/70 hover:text-[#1A365D] transition-colors">
-              Tin tức
-            </Link>
-          </div>
-          <button
-            className="md:hidden p-2 bg-[#A5C4E5]/20 rounded-full text-[#705E4C] hover:bg-[#A5C4E5]/40 transition-colors"
-            onClick={() => setMobileFilterOpen(true)}
-          >
-            <Filter size={20} />
-          </button>
-        </div>
-      </header>
 
       {/* Page Header */}
       <div className="w-full bg-[#D1E9FF]/30 py-16 px-6 relative overflow-hidden">
@@ -777,21 +743,6 @@ export default function ProductListingPage() {
           </div>
         </div>
       </section>
-
-      {/* ─── FOOTER ────────────────────────────────────────────── */}
-      <footer className="w-full py-12 bg-[#1A365D]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-24 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="font-serif text-2xl tracking-widest text-white uppercase">INSULA</p>
-          <p className="text-sm font-light text-[#8BB8DC]">© 2026 INSULA. All rights reserved.</p>
-          <div className="flex items-center gap-6">
-            {["Facebook", "Shopee", "TikTok"].map((s) => (
-              <a key={s} href="#" className="text-xs uppercase tracking-widest text-[#8BB8DC] hover:text-white transition-colors">
-                {s}
-              </a>
-            ))}
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

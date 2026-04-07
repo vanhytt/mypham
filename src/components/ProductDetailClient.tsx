@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, ArrowLeft, ShieldCheck, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Star, ShieldCheck, Loader2 } from "lucide-react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation, Thumbs } from 'swiper/modules';
 import type { Swiper as SwiperClass } from 'swiper';
@@ -101,15 +100,6 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
   return (
     <div className="min-h-dvh bg-[#F8FAFC]">
-      {/* Navigation Header */}
-      <nav className="fixed top-0 left-0 w-full z-50 bg-white/70 backdrop-blur-md border-b border-[#A5C4E5]/20 px-4 md:px-8 py-4 flex items-center justify-between">
-        <Link href="/san-pham" className="flex items-center gap-2 text-[#1A365D] hover:text-[#A5C4E5] transition-colors group">
-          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-          <span className="text-xs uppercase tracking-widest font-bold">Quay lại</span>
-        </Link>
-        <div className="font-serif text-xl tracking-widest text-[#1A365D]">INSULA</div>
-        <div className="w-20 hidden md:block" />
-      </nav>
 
       <main className="max-w-[1400px] mx-auto px-4 md:px-8 pt-24 pb-20">
         <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-[#A5C4E5]/10 lg:flex lg:h-[calc(100dvh-160px)] lg:min-h-[700px]">

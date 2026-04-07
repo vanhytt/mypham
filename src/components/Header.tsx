@@ -46,61 +46,86 @@ const navItems = [
 
 function NavItem({ item, pathname }: { item: (typeof navItems)[0], pathname: string }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (item.dropdown) setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpen(false);
+    }, 150); // Small delay to prevent flickering
+  };
 
   const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
 
   return (
-    <div className="relative" ref={ref}>
+    <div
+      className="relative group"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <Link
         href={item.href}
-        className={`flex items-center gap-1 text-sm font-medium uppercase tracking-widest transition-colors py-2 ${
-          isActive ? "text-[#1A365D] border-b border-[#1A365D]" : "text-[#4a7fb5] hover:text-[#1A365D]"
-        }`}
-        onClick={(e) => {
-          if (item.dropdown) {
-            e.preventDefault();
-            setOpen(!open);
-          }
-        }}
+        className={`flex items-center gap-1.5 text-sm font-medium uppercase tracking-[0.15em] transition-all duration-300 py-3 relative ${isActive ? "text-[#1A365D]" : "text-[#4a7fb5] hover:text-[#1A365D]"
+          }`}
       >
         {item.label}
         {item.dropdown && (
-          <ChevronDown size={14} className={`transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
+          <motion.span
+            animate={{ rotate: open ? 180 : 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <ChevronDown size={14} className="opacity-70" />
+          </motion.span>
         )}
+        {/* Animated indicator for active/hover state */}
+        <motion.span
+          className="absolute bottom-1 left-0 h-0.5 bg-[#1A365D]"
+          initial={{ width: 0 }}
+          animate={{ width: isActive || open ? "100%" : 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        />
       </Link>
-      
+
       <AnimatePresence>
         {open && item.dropdown && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            initial={{ opacity: 0, y: 15, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-full mt-2 w-56 bg-white/60 backdrop-blur-3xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 overflow-hidden"
+            exit={{ opacity: 0, y: 10, scale: 0.98 }}
+            transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }} // smooth "dải" down
+            className="absolute top-full left-[-20px] pt-2 w-64 z-[60]"
           >
-            <div className="py-2">
-              {item.dropdown.map((dropItem) => (
-                <Link
+            <div className="bg-white/90 backdrop-blur-2xl rounded-[1.5rem] shadow-[0_20px_50px_rgba(26,54,93,0.12)] border border-white/60 overflow-hidden py-3">
+              {item.dropdown.map((dropItem, idx) => (
+                <motion.div
                   key={dropItem.label}
-                  href={dropItem.href}
-                  className="block px-6 py-3 text-sm text-[#4a7fb5] hover:text-[#1A365D] hover:bg-white/50 font-medium transition-colors"
-                  onClick={() => setOpen(false)}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 + 0.1 }}
                 >
-                  {dropItem.label}
-                </Link>
+                  <Link
+                    href={dropItem.href}
+                    className="block px-7 py-3 text-sm text-[#4a7fb5] hover:text-[#1A365D] hover:bg-[#A5C4E5]/10 font-medium transition-all duration-200 tracking-wide flex items-center justify-between group/item"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span>{dropItem.label}</span>
+                    <motion.span
+                      initial={{ x: -5, opacity: 0 }}
+                      whileHover={{ x: 0, opacity: 1 }}
+                      className="text-[#A5C4E5]"
+                    >
+                      →
+                    </motion.span>
+                  </Link>
+                </motion.div>
               ))}
             </div>
+            {/* Elegant arrow top */}
+            <div className="absolute top-[2px] left-[35px] w-4 h-4 bg-white/90 rotate-45 border-t border-l border-white/60 -z-10" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -109,22 +134,34 @@ function NavItem({ item, pathname }: { item: (typeof navItems)[0], pathname: str
 }
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      // Calculate progress from 0 to 1 over 200px
+      const currentScroll = window.scrollY;
+      const progress = Math.min(currentScroll / 200, 1);
+      setScrollProgress(progress);
+    };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isScrolled = scrollProgress > 0.01;
+
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled
-        ? "bg-white/50 backdrop-blur-xl border-b border-[#A5C4E5]/20 shadow-sm py-4"
-        : "bg-transparent py-4 lg:py-6"
-        }`}
+      className="fixed top-0 left-0 w-full z-50 py-5 transition-colors duration-500"
+      style={{
+        backgroundColor: `rgba(255, 255, 255, ${0.03 + scrollProgress * 0.05})`, // Very subtle background
+        backdropFilter: `blur(${scrollProgress * 20}px)`,
+        WebkitBackdropFilter: `blur(${scrollProgress * 20}px)`,
+        borderBottom: `1px solid rgba(255, 255, 255, ${scrollProgress * 0.1})`, // Subtle border on scroll
+        boxShadow: isScrolled ? `0 10px 30px rgba(26, 54, 93, ${scrollProgress * 0.05})` : "none",
+      }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-24 flex items-center justify-between">
         {/* Logo */}

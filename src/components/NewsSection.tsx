@@ -83,7 +83,12 @@ export default function NewsSection() {
               >
                 <Link href={`/news/${post.slug}`} className="block relative aspect-[16/10] overflow-hidden">
                   {post.image_url ? (
-                    <Image src={post.image_url} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <Image 
+                      src={post.image_url} 
+                      alt={post.title} 
+                      fill 
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
                   ) : (
                     <div className="w-full h-full bg-gray-50 flex items-center justify-center">
                       <span className="text-sm tracking-widest text-[#1A365D]/30 uppercase font-serif">INSULA</span>

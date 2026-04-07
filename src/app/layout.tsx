@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ["vietnamese"], variable: "--font-inter", display
 const playfair = Playfair_Display({ subsets: ["vietnamese"], variable: "--font-playfair", display: "swap" });
 
 const DynamicFloatingContact = dynamic(() => import("@/components/FloatingContact"), { ssr: false });
+import LayoutWrapper from "@/components/LayoutWrapper";
 
 export const metadata: Metadata = {
   title: "INSULA - Vẻ đẹp nguyên bản",
@@ -50,7 +51,9 @@ export default function RootLayout({
     <html lang="vi" style={{ backgroundColor: '#EEF2FF' }}>
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         {/* Background is handled cleanly by globals.css without watermark */}
-        {children}
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
         <Analytics />
         <DynamicFloatingContact />
         <Script

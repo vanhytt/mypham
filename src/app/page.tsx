@@ -1,118 +1,12 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Leaf, Heart, ShieldCheck, ArrowRight, Menu, X, Loader2, ChevronDown } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Leaf, Heart, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import NewsSection from "@/components/NewsSection";
-
-const navItems = [
-  {
-    label: "Trang chủ",
-    href: "/",
-    dropdown: null,
-  },
-  {
-    label: "Sản phẩm",
-    href: "/san-pham",
-    dropdown: [
-      { label: "Chăm sóc da", href: "/san-pham" },
-      { label: "Trang điểm", href: "/san-pham" },
-      { label: "Nước hoa", href: "/san-pham" },
-      { label: "Bộ quà tặng", href: "/san-pham" },
-    ],
-  },
-  {
-    label: "Về chúng tôi",
-    href: "/#Về chúng tôi",
-    dropdown: [
-      { label: "Câu chuyện thương hiệu", href: "/#Về chúng tôi" },
-      { label: "Triết lý", href: "/#Về chúng tôi" },
-      { label: "Thành phần tự nhiên", href: "/#Về chúng tôi" },
-    ],
-  },
-  {
-    label: "Tin tức",
-    href: "/news",
-    dropdown: null,
-  },
-  {
-    label: "Hệ thống",
-    href: "/#Hệ thống",
-    dropdown: null,
-  },
-];
-
-function NavItem({ item }: { item: (typeof navItems)[0] }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className="relative group"
-      onMouseEnter={() => item.dropdown && setOpen(true)}
-      onMouseLeave={() => item.dropdown && setOpen(false)}
-    >
-      <Link
-        href={item.href}
-        className="relative flex items-center gap-1 text-[#4a7fb5] hover:text-[#1A365D] text-sm uppercase tracking-widest font-medium transition-colors duration-200 pb-1"
-      >
-        {item.label}
-        {item.dropdown && (
-          <motion.span
-            animate={{ rotate: open ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ChevronDown size={13} />
-          </motion.span>
-        )}
-        {/* Animated underline */}
-        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1.5px] bg-[#A5C4E5] w-0 group-hover:w-full transition-all duration-300 ease-out" />
-      </Link>
-
-      {/* Dropdown */}
-      <AnimatePresence>
-        {item.dropdown && open && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-52 z-50"
-          >
-            {/* Glassmorphism card */}
-            <div className="bg-white/80 backdrop-blur-xl border border-[#A5C4E5]/30 rounded-2xl shadow-xl shadow-[#A5C4E5]/10 overflow-hidden py-2 flex flex-col">
-              {item.dropdown.map((sub) => (
-                <Link
-                  key={sub.label}
-                  href={sub.href}
-                  className="block px-5 py-2.5 text-[#4a7fb5] hover:text-[#1A365D] hover:bg-[#A5C4E5]/10 text-sm transition-colors duration-150 tracking-wide"
-                >
-                  {sub.label}
-                </Link>
-              ))}
-            </div>
-            {/* Arrow pointer */}
-            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white/80 border-l border-t border-white/50 rotate-45" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
 
 interface Product {
   id?: string | number;
@@ -128,8 +22,6 @@ interface Product {
 
 export default function Home() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -199,98 +91,11 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const featuredDisplayProducts = allProducts.slice(0, 3);
 
   return (
     <div className="min-h-dvh" style={{ isolation: 'isolate' }}>
 
-      {/* ─── NAVBAR ──────────────────────────────────────────────── */}
-      <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled
-          ? "bg-white/20 backdrop-blur-xl border-b border-white/40 shadow-sm py-4"
-          : "bg-transparent py-6"
-          }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 lg:px-24 flex items-center justify-between">
-          {/* Logo */}
-          <motion.a
-            href="#"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex items-center justify-center shrink-0 pr-6"
-          >
-            <Image
-              src="/logo.png"
-              alt="INSULA Logo"
-              width={160}
-              height={56}
-              className="h-10 lg:h-14 w-auto object-contain"
-              style={{ filter: 'brightness(0)' }}
-              priority
-            />
-          </motion.a>
-
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-10">
-            {navItems.map((item) => (
-              <NavItem key={item.label} item={item} />
-            ))}
-          </nav>
-
-          {/* CTA right side */}
-          <div className="hidden md:flex items-center gap-4">
-            <motion.a
-              href="#Hệ thống"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="px-5 py-2 border border-[#A5C4E5]/60 text-[#1A365D] text-xs uppercase tracking-widest rounded-full bg-[#A5C4E5]/20 backdrop-blur-sm hover:bg-[#A5C4E5]/40 transition-colors font-medium shadow-[0_0_12px_rgba(165,196,229,0.4)]"
-            >
-              Tư vấn miễn phí
-            </motion.a>
-          </div>
-
-          {/* Mobile Toggle */}
-          <button
-            className="md:hidden text-[#1A365D]"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, scaleY: 0.95, y: -10 }}
-              animate={{ opacity: 1, scaleY: 1, y: 0 }}
-              exit={{ opacity: 0, scaleY: 0.95, y: -10 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="md:hidden absolute top-full left-0 w-full bg-white/30 backdrop-blur-xl border-t border-white/40 origin-top shadow-xl"
-            >
-              <div className="flex flex-col items-center py-8 space-y-6">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    className="text-[#4a7fb5] hover:text-[#1A365D] text-base uppercase tracking-widest font-medium transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
 
       <main>
         {/* ─── HERO SECTION ─────────────────────────────────────── */}
@@ -654,32 +459,6 @@ export default function Home() {
 
 
 
-      {/* ─── FOOTER ────────────────────────────────────────────── */}
-
-      {/* ─── FOOTER ────────────────────────────────────────────── */}
-      <footer className="w-full py-12 bg-[#1A365D]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-24 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="font-serif text-2xl tracking-widest text-white uppercase">INSULA</p>
-          <p className="text-sm font-light text-[#8BB8DC]">© 2026 INSULA. All rights reserved.</p>
-          <div className="flex items-center gap-6 md:mr-28">
-            {[
-              { name: "Facebook", link: "https://www.facebook.com/InsulaCushion/" },
-              { name: "Shopee", link: "" },
-              { name: "TikTok", link: "https://vt.tiktok.com/ZSH2U5CaT/?page=TikTokShop" }
-            ].map((social) => (
-              <a 
-                key={social.name} 
-                href={social.link} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs uppercase tracking-widest text-[#8BB8DC] hover:text-white transition-colors"
-              >
-                {social.name}
-              </a>
-            ))}
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

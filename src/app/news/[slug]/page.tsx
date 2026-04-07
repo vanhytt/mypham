@@ -3,8 +3,6 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -60,7 +58,6 @@ export default async function NewsDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-dvh relative overflow-hidden">
-      <Header />
       
       {/* Background Decorator Blobs - Homage to homepage */}
       <div className="absolute inset-0 pointer-events-none -z-10">
@@ -137,8 +134,6 @@ export default async function NewsDetailPage({ params }: Props) {
           </div>
         )}
       </main>
-      
-      <Footer />
     </div>
   );
 }

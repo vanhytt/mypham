@@ -6,8 +6,6 @@ import { ArrowRight, CalendarDays } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 const supabase = createClient();
 
@@ -43,7 +41,6 @@ export default function NewsListPage() {
 
   return (
     <div className="min-h-dvh">
-      <Header />
 
       <main className="max-w-7xl mx-auto px-6 lg:px-24 pt-32 pb-16">
         <div className="text-center mb-16">
@@ -119,8 +116,6 @@ export default function NewsListPage() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }
