@@ -10,6 +10,15 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/products/:path*',
+        destination: '/san-pham/:path*',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
