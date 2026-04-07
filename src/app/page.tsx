@@ -196,7 +196,7 @@ export default function Home() {
                 className="relative z-10 w-full max-w-[420px] aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-[#1A365D]/15 lg:animate-float bg-gradient-to-t from-[#D1E9FF]/40 to-transparent border border-[#A5C4E5]/30"
               >
                 <Image
-                  src="/products/meo1.png"
+                  src="/INSULA BỔ SUNG (3).png"
                   alt="Sản phẩm INSULA cao cấp"
                   width={420}
                   height={560}
