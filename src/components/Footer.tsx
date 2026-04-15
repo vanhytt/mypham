@@ -9,12 +9,12 @@ export default function Footer() {
         <div className="flex items-center gap-6 md:mr-28">
           {[
             { name: "Facebook", link: "https://www.facebook.com/InsulaCushion/" },
-            { name: "Shopee", link: "" },
+            { name: "Shopee", link: "https://vn.shp.ee/t8GQdmGK" },
             { name: "TikTok", link: "https://vt.tiktok.com/ZSH2U5CaT/?page=TikTokShop" }
           ].map((social) => (
-            <a 
-              key={social.name} 
-              href={social.link} 
+            <a
+              key={social.name}
+              href={social.link}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs uppercase tracking-widest text-[#8BB8DC] hover:text-white transition-colors"
