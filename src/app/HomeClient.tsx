@@ -1,68 +1,20 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { Leaf, Heart, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import NewsSection from "@/components/NewsSection";
+import type { Tables } from "@/lib/database.types";
 
-interface Product {
-  id?: string | number;
-  ten_sp?: string;
-  gia?: number;
-  giam_gia?: number | null;
-  anh_url?: string;
-  anh1?: string;
-  anh2?: string;
-  anh3?: string;
-  anh4?: string;
-  mo_ta?: string;
-}
+type Product = Tables<"list">;
 
-export default function Home() {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+export default function HomeClient({ products }: { products: Product[] }) {
+  const featuredDisplayProducts = products.slice(0, 3);
 
-  const fetchProducts = useCallback(async () => {
-    if (!supabase) {
-      console.error("Chưa cấu hình biến môi trường Supabase!");
-      setErrorMsg("Chưa cấu hình biến môi trường Supabase!");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setErrorMsg(null);
-
-      const { data, error } = await supabase
-        .from("list")
-        .select("*")
-        .order("id", { ascending: true });
-
-      console.log("Supabase Data fetched:", data);
-      if (error) {
-        console.error("Error fetching products from 'list':", error);
-        setErrorMsg("Lỗi kết nối Database");
-      } else if (data) {
-        setAllProducts(data);
-      }
-    } catch (err: unknown) {
-      console.error("Unexpected error:", err);
-      setErrorMsg("Lỗi kết nối Database");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwrJuxPHtT0z1atVMDhh-tY3Cys7cRyV50-G2H1zzlYlmtjr8Mzp6agfEbnKGbOIEH4/exec';
+  const SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbwrJuxPHtT0z1atVMDhh-tY3Cys7cRyV50-G2H1zzlYlmtjr8Mzp6agfEbnKGbOIEH4/exec";
   const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -76,12 +28,12 @@ export default function Home() {
 
     try {
       await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
+        method: "POST",
+        mode: "no-cors",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
       setSubmitSuccess(true);
       setFormData({ name: "", phone: "", email: "" });
@@ -92,16 +44,11 @@ export default function Home() {
     }
   };
 
-  const featuredDisplayProducts = allProducts.slice(0, 3);
-
   return (
-    <div className="min-h-dvh" style={{ isolation: 'isolate' }}>
-
-
+    <div className="min-h-dvh" style={{ isolation: "isolate" }}>
       <main>
         {/* ─── HERO SECTION ─────────────────────────────────────── */}
         <section className="relative w-full min-h-dvh flex items-center pt-24 pb-16 px-6 lg:px-24 overflow-hidden">
-
           {/* Abstract background shapes */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-[-10%] right-[-5%] w-[700px] h-[700px] rounded-full bg-gradient-to-br from-[#E0E7FF]/80 to-transparent blur-3xl" />
@@ -110,7 +57,6 @@ export default function Home() {
           </div>
 
           <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
-
             {/* Left: Text */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -135,7 +81,8 @@ export default function Home() {
               </h1>
 
               <p className="text-[#4a7fb5] text-base lg:text-lg max-w-sm font-light leading-[1.8] tracking-wide">
-                Từ thiên nhiên, chắt lọc tinh túy — để mỗi sản phẩm trở thành nghi thức chăm sóc bản thân của bạn.
+                Từ thiên nhiên, chắt lọc tinh túy — để mỗi sản phẩm trở thành nghi thức chăm sóc bản thân của
+                bạn.
               </p>
 
               <div className="flex items-center gap-4 pt-2">
@@ -164,7 +111,10 @@ export default function Home() {
                 </motion.a>
 
                 {/* Ghost link */}
-                <a href="#Về chúng tôi" className="text-sm text-[#4a7fb5] underline underline-offset-4 hover:text-[#1A365D] transition-colors tracking-wide">
+                <a
+                  href="#Về chúng tôi"
+                  className="text-sm text-[#4a7fb5] underline underline-offset-4 hover:text-[#1A365D] transition-colors tracking-wide"
+                >
                   Về chúng tôi
                 </a>
               </div>
@@ -187,53 +137,47 @@ export default function Home() {
             {/* Right: Floating Image */}
             <div
               className="relative flex items-center justify-center lg:animate-fade-in-up"
-              style={{ animationDelay: '150ms' }}
+              style={{ animationDelay: "150ms" }}
             >
               {/* Decorative circle */}
               <div className="absolute w-[440px] h-[440px] rounded-full bg-gradient-to-br from-[#E0E7FF]/80 to-[#FCE7F3]/60 lg:block hidden" />
 
               {/* Floating image wrapper */}
-              <div
-                className="relative z-10 w-full max-w-[420px] aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-[#1A365D]/15 lg:animate-float bg-gradient-to-t from-[#D1E9FF]/40 to-transparent border border-[#A5C4E5]/30"
-              >
+              <div className="relative z-10 w-full max-w-[420px] aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-[#1A365D]/15 lg:animate-float bg-gradient-to-t from-[#D1E9FF]/40 to-transparent border border-[#A5C4E5]/30">
                 <Image
-                  src="/INSULA BỔ SUNG (3).png"
+                  src="/hero.webp"
                   alt="Sản phẩm INSULA cao cấp"
                   width={420}
                   height={560}
                   className="w-full h-full object-contain p-4"
                   priority
                   quality={80}
+                  loading="eager"
+                  fetchPriority="high"
+                  sizes="(min-width: 1024px) 420px, 70vw"
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A365D]/20 via-transparent to-transparent" />
-              </div>
 
-              {/* Bottom product badge */}
-              <div
-                className="absolute -bottom-4 -left-4 lg:-bottom-6 lg:-left-10 z-20 bg-white/90 backdrop-blur-md rounded-2xl px-5 py-4 shadow-xl shadow-[#A5C4E5]/20 border border-white/80 lg:animate-fade-in-right"
-                style={{ animationDelay: '800ms' }}
-              >
-                <p className="text-[10px] uppercase tracking-widest text-[#4a7fb5] mb-1">Best Seller</p>
-                <p className="text-sm font-serif text-[#1A365D] font-medium">INSULA CUSHION</p>
-                <p className="text-xs text-[#2B547E]">360.000 đ</p>
-              </div>
-
-              {/* Top badge */}
-              <div
-                className="absolute top-8 -right-4 lg:-right-8 z-20 bg-white/90 backdrop-blur-md rounded-2xl px-4 py-3 shadow-xl shadow-[#A5C4E5]/20 border border-white/80 flex items-center gap-3 lg:animate-fade-in-left"
-                style={{ animationDelay: '1000ms' }}
-              >
-                <div className="w-8 h-8 rounded-full bg-[#A5C4E5]/40 flex items-center justify-center text-[#1A365D]">
-                  <Leaf size={14} />
+                {/* Bottom product badge */}
+                <div className="absolute -bottom-4 -left-4 lg:-bottom-6 lg:-left-10 z-20 bg-white/90 backdrop-blur-md rounded-2xl px-5 py-4 shadow-xl shadow-[#A5C4E5]/20 border border-white/80 lg:animate-fade-in-right" style={{ animationDelay: "800ms" }}>
+                  <p className="text-[10px] uppercase tracking-widest text-[#4a7fb5] mb-1">Best Seller</p>
+                  <p className="text-sm font-serif text-[#1A365D] font-medium">INSULA CUSHION</p>
+                  <p className="text-xs text-[#2B547E]">360.000 đ</p>
                 </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-[#4a7fb5]">Thành phần</p>
-                  <p className="text-xs font-medium text-[#1A365D]">Bền bỉ 24h</p>
+
+                {/* Top badge */}
+                <div className="absolute top-8 -right-4 lg:-right-8 z-20 bg-white/90 backdrop-blur-md rounded-2xl px-4 py-3 shadow-xl shadow-[#A5C4E5]/20 border border-white/80 flex items-center gap-3 lg:animate-fade-in-left" style={{ animationDelay: "1000ms" }}>
+                  <div className="w-8 h-8 rounded-full bg-[#A5C4E5]/40 flex items-center justify-center text-[#1A365D]">
+                    <Leaf size={14} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-widest text-[#4a7fb5]">Thành phần</p>
+                    <p className="text-xs font-medium text-[#1A365D]">Bền bỉ 24h</p>
+                  </div>
                 </div>
               </div>
             </div>
-
           </div>
         </section>
 
@@ -241,7 +185,7 @@ export default function Home() {
         <section
           className="w-full px-6 py-28"
           id="Sản phẩm"
-          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}
+          style={{ contentVisibility: "auto", containIntrinsicSize: "0 800px" }}
         >
           <div className="max-w-6xl mx-auto">
             {/* Section header */}
@@ -252,20 +196,13 @@ export default function Home() {
               className="flex flex-col items-center justify-center mb-16 text-center"
             >
               <span className="text-xs uppercase tracking-[0.25em] text-[#4a7fb5] font-medium mb-4 flex items-center gap-3">
-                <span className="w-6 h-px bg-[#4a7fb5]" /> Mới Nhất Mùa Này <span className="w-6 h-px bg-[#4a7fb5]" />
+                <span className="w-6 h-px bg-[#4a7fb5]" /> Mới Nhất Mùa Này{" "}
+                <span className="w-6 h-px bg-[#4a7fb5]" />
               </span>
               <h2 className="text-4xl lg:text-5xl font-serif text-[#1A365D] tracking-tight">Gợi Ý Cho Bạn</h2>
             </motion.div>
 
-            {loading ? (
-              <div className="flex justify-center py-20">
-                <Loader2 className="animate-spin text-[#4a7fb5]" size={40} />
-              </div>
-            ) : errorMsg ? (
-              <div className="text-center py-20">
-                <p className="text-red-500 font-serif italic text-lg">{errorMsg}</p>
-              </div>
-            ) : featuredDisplayProducts.length > 0 ? (
+            {featuredDisplayProducts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
                 {featuredDisplayProducts.map((product, idx) => (
                   <motion.div
@@ -274,7 +211,7 @@ export default function Home() {
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.1, duration: 0.6 }}
                     whileHover={{ y: -6, transition: { duration: 0.3 } }}
-                    key={product.id || idx}
+                    key={product.id ?? idx}
                     className="group relative bg-[#FAF9F6]/90 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-xl shadow-blue-500/10 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 cursor-pointer flex flex-col h-full border border-white/60"
                   >
                     {/* Image container */}
@@ -282,13 +219,13 @@ export default function Home() {
                       {product.anh_url ? (
                         <Image
                           src={product.anh_url}
-                          alt={product.ten_sp || 'Sản phẩm INSULA'}
+                          alt={product.ten_sp || "Sản phẩm INSULA"}
                           width={400}
                           height={400}
                           className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
                           quality={75}
                           priority={idx < 3}
-                          loading={idx < 3 ? 'eager' : 'lazy'}
+                          loading={idx < 3 ? "eager" : "lazy"}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
@@ -299,14 +236,16 @@ export default function Home() {
                       {/* Glassmorphism badge top-left */}
                       <div className="absolute top-4 left-4 bg-[#A5C4E5]/40 backdrop-blur-md border border-white/50 rounded-full px-3 py-1 flex items-center gap-1.5 shadow-sm">
                         <span className="text-[#1A365D] text-[10px]">★</span>
-                        <span className="text-[10px] uppercase tracking-wider text-[#1A365D] font-medium">New Arrival</span>
+                        <span className="text-[10px] uppercase tracking-wider text-[#1A365D] font-medium">
+                          New Arrival
+                        </span>
                       </div>
                     </div>
 
                     {/* Card body */}
                     <div className="flex flex-col flex-1 p-6">
                       <h3 className="font-serif text-lg text-[#1A365D] font-semibold leading-snug mb-1.5 group-hover:text-[#2B547E] transition-colors duration-300 line-clamp-2">
-                        {product.ten_sp || 'Sản phẩm'}
+                        {product.ten_sp || "Sản phẩm"}
                       </h3>
                       {product.mo_ta && (
                         <p className="text-sm text-[#4a7fb5] font-light line-clamp-2 leading-relaxed mt-1">
@@ -321,15 +260,15 @@ export default function Home() {
                           {product.giam_gia != null ? (
                             <>
                               <span className="text-xs font-normal text-gray-400 line-through leading-none mb-0.5">
-                                {Number(product.gia).toLocaleString('vi-VN')} đ
+                                {Number(product.gia).toLocaleString("vi-VN")} đ
                               </span>
                               <span className="text-base font-bold text-red-600 tracking-tight drop-shadow-[0_0_8px_rgba(220,38,38,0.25)]">
-                                {Number(product.giam_gia).toLocaleString('vi-VN')} đ
+                                {Number(product.giam_gia).toLocaleString("vi-VN")} đ
                               </span>
                             </>
                           ) : (
                             <span className="text-base font-semibold text-[#1A365D] tracking-tight">
-                              {product.gia ? Number(product.gia).toLocaleString('vi-VN') + ' đ' : 'Liên hệ'}
+                              {product.gia ? Number(product.gia).toLocaleString("vi-VN") + " đ" : "Liên hệ"}
                             </span>
                           )}
                         </div>
@@ -346,7 +285,9 @@ export default function Home() {
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="text-[#4a7fb5] font-serif italic text-lg">Hiện tại chưa có sản phẩm nào trong bộ sưu tập này</p>
+                <p className="text-[#4a7fb5] font-serif italic text-lg">
+                  Hiện tại chưa có sản phẩm nào trong bộ sưu tập này
+                </p>
               </div>
             )}
           </div>
@@ -359,7 +300,7 @@ export default function Home() {
         <section
           className="w-full px-6 py-28"
           id="Về chúng tôi"
-          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}
+          style={{ contentVisibility: "auto", containIntrinsicSize: "0 600px" }}
         >
           <div className="max-w-5xl mx-auto text-center">
             <motion.h2
@@ -370,11 +311,24 @@ export default function Home() {
             >
               Triết Lý Của Chúng Tôi
             </motion.h2>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {[
-                { icon: <Leaf size={32} />, title: "Tôn vinh bản sắc riêng", desc: "Tôn vinh những nét đẹp sẵn có, mang lại sự tự tin từ sâu bên trong mỗi làn da." },
-                { icon: <Heart size={32} />, title: "Cruelty-Free", desc: "Cam kết không thử nghiệm trên động vật trong toàn bộ quá trình nghiên cứu và sản xuất." },
-                { icon: <ShieldCheck size={32} />, title: "Chất Lượng Vượt Trội", desc: "Được kiểm chứng lâm sàng đem lại hiệu quả rõ rệt sau 4 tuần sử dụng đều đặn." },
+                {
+                  icon: <Leaf size={32} />,
+                  title: "Tôn vinh bản sắc riêng",
+                  desc: "Tôn vinh những nét đẹp sẵn có, mang lại sự tự tin từ sâu bên trong mỗi làn da.",
+                },
+                {
+                  icon: <Heart size={32} />,
+                  title: "Cruelty-Free",
+                  desc: "Cam kết không thử nghiệm trên động vật trong toàn bộ quá trình nghiên cứu và sản xuất.",
+                },
+                {
+                  icon: <ShieldCheck size={32} />,
+                  title: "Chất Lượng Vượt Trội",
+                  desc: "Được kiểm chứng lâm sàng đem lại hiệu quả rõ rệt sau 4 tuần sử dụng đều đặn.",
+                },
               ].map((item, i) => (
                 <motion.div
                   key={item.title}
@@ -399,29 +353,58 @@ export default function Home() {
         <section
           className="w-full px-6 py-28"
           id="Hệ thống"
-          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 700px' }}
+          style={{ contentVisibility: "auto", containIntrinsicSize: "0 700px" }}
         >
           <div className="max-w-4xl mx-auto bg-white/30 backdrop-blur-xl rounded-3xl p-10 lg:p-16 shadow-[0_8px_40px_rgba(139,92,246,0.15)] relative overflow-hidden border border-white/50">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#E0E7FF] to-[#FCE7F3] rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2" />
 
             <div className="relative z-10 flex flex-col lg:flex-row gap-16 items-center">
               <div className="w-full lg:w-1/2 text-center lg:text-left">
-                <span className="text-xs uppercase tracking-[0.2em] text-[#4a7fb5] font-medium mb-3 block">Chăm sóc khách hàng</span>
-                <h2 className="text-4xl lg:text-5xl font-serif text-[#1A365D] mb-6 tracking-tight">Nhận tư vấn<br />miễn phí</h2>
+                <span className="text-xs uppercase tracking-[0.2em] text-[#4a7fb5] font-medium mb-3 block">
+                  Chăm sóc khách hàng
+                </span>
+                <h2 className="text-4xl lg:text-5xl font-serif text-[#1A365D] mb-6 tracking-tight">
+                  Nhận tư vấn<br />
+                  miễn phí
+                </h2>
                 <p className="text-[#4a7fb5] text-base leading-relaxed">
-                  Để lại thông tin, chuyên gia của chúng tôi sẽ liên hệ với bạn trong 15 phút để tư vấn lộ trình chăm sóc da phù hợp nhất.
+                  Để lại thông tin, chuyên gia của chúng tôi sẽ liên hệ với bạn trong 15 phút để tư vấn lộ trình
+                  chăm sóc da phù hợp nhất.
                 </p>
               </div>
 
               <div className="w-full lg:w-1/2">
                 <form className="flex flex-col space-y-4" onSubmit={handleFormSubmit}>
                   {[
-                    { id: "name", key: "name", label: "Họ tên *", type: "text", placeholder: "Nhập họ và tên của bạn", required: true },
-                    { id: "phone", key: "phone", label: "Số điện thoại *", type: "tel", placeholder: "Nhập số điện thoại", required: true },
-                    { id: "email", key: "email", label: "Email", type: "email", placeholder: "Nhập địa chỉ email", required: false },
+                    {
+                      id: "name",
+                      key: "name",
+                      label: "Họ tên *",
+                      type: "text",
+                      placeholder: "Nhập họ và tên của bạn",
+                      required: true,
+                    },
+                    {
+                      id: "phone",
+                      key: "phone",
+                      label: "Số điện thoại *",
+                      type: "tel",
+                      placeholder: "Nhập số điện thoại",
+                      required: true,
+                    },
+                    {
+                      id: "email",
+                      key: "email",
+                      label: "Email",
+                      type: "email",
+                      placeholder: "Nhập địa chỉ email",
+                      required: false,
+                    },
                   ].map((f) => (
                     <div key={f.id} className="flex flex-col space-y-1.5">
-                      <label htmlFor={f.id} className="text-sm font-medium text-[#1A365D]">{f.label}</label>
+                      <label htmlFor={f.id} className="text-sm font-medium text-[#1A365D]">
+                        {f.label}
+                      </label>
                       <input
                         type={f.type}
                         id={f.id}
@@ -434,6 +417,7 @@ export default function Home() {
                       />
                     </div>
                   ))}
+
                   <motion.button
                     whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                     whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
@@ -470,9 +454,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-
-
     </div>
   );
 }
+

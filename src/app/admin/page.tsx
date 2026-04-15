@@ -9,6 +9,7 @@ interface Product {
   id: number | string;
   ten_sp: string;
   gia: number;
+  giam_gia?: number | null;
   danh_muc?: string;
   anh_url: string;
   anh1?: string;
@@ -41,6 +42,7 @@ export default function AdminProductsPage() {
   const [formData, setFormData] = useState<Partial<Product>>({
     ten_sp: "",
     gia: 0,
+    giam_gia: null,
     danh_muc: "Trang điểm",
     mo_ta: "",
   });
@@ -88,7 +90,7 @@ export default function AdminProductsPage() {
     } else {
       setEditingProduct(null);
       setFormData({
-        ten_sp: "", gia: 0, danh_muc: "Trang điểm", mo_ta: "",
+        ten_sp: "", gia: 0, giam_gia: null, danh_muc: "Trang điểm", mo_ta: "",
       });
       setImages([]);
     }
@@ -105,7 +107,9 @@ export default function AdminProductsPage() {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'gia' ? Number(value) : value
+      [name]: (name === 'gia' || name === 'giam_gia')
+        ? (value === '' ? null : Number(value))
+        : value
     }));
   };
 
@@ -297,7 +301,18 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.ten_sp}</td>
                     <td className="px-6 py-4 whitespace-nowrap"><span className="text-sm border border-gray-200 bg-gray-50 px-2 py-1 rounded-md">{product.danh_muc || "Không có"}</span></td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-[#1A365D]">{product.gia.toLocaleString('vi-VN')} đ</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        {product.giam_gia != null ? (
+                          <>
+                            <span className="text-sm font-bold text-red-600">{Number(product.giam_gia).toLocaleString('vi-VN')} đ</span>
+                            <span className="text-xs text-gray-400 line-through">{product.gia.toLocaleString('vi-VN')} đ</span>
+                          </>
+                        ) : (
+                          <span className="text-sm font-semibold text-[#1A365D]">{product.gia.toLocaleString('vi-VN')} đ</span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end gap-2">
                         <button onClick={() => handleOpenModal(product)} className="p-2 text-[#A5C4E5] hover:text-[#1A365D] hover:bg-[#A5C4E5]/20 rounded-lg">
@@ -345,20 +360,36 @@ export default function AdminProductsPage() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Giá (VNĐ) *</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Giá Gốc (VNĐ) *</label>
                         <input type="number" name="gia" required min="0" value={formData.gia || 0} onChange={handleChange}
                           className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1A365D]/30 focus:border-[#1A365D] bg-gray-50/50" />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Danh mục</label>
-                        <select name="danh_muc" value={formData.danh_muc || "Trang điểm"} onChange={handleChange}
-                          className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1A365D]/30 focus:border-[#1A365D] bg-gray-50/50">
-                          <option value="Trang điểm">Trang điểm</option>
-                          <option value="Chăm sóc da">Chăm sóc da</option>
-                          <option value="Nước hoa">Nước hoa</option>
-                          <option value="Bộ quà tặng">Bộ quà tặng</option>
-                        </select>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                          Giá Khuyến Mãi
+                          <span className="ml-1.5 text-[10px] font-normal text-gray-400 normal-case">(để trống = không KM)</span>
+                        </label>
+                        <input
+                          type="number"
+                          name="giam_gia"
+                          min="0"
+                          value={formData.giam_gia ?? ''}
+                          onChange={handleChange}
+                          placeholder="VD: 299000"
+                          className="w-full px-4 py-2.5 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-300 focus:border-red-400 bg-red-50/30 placeholder-gray-400"
+                        />
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">Danh mục</label>
+                      <select name="danh_muc" value={formData.danh_muc || "Trang điểm"} onChange={handleChange}
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1A365D]/30 focus:border-[#1A365D] bg-gray-50/50">
+                        <option value="Trang điểm">Trang điểm</option>
+                        <option value="Chăm sóc da">Chăm sóc da</option>
+                        <option value="Nước hoa">Nước hoa</option>
+                        <option value="Bộ quà tặng">Bộ quà tặng</option>
+                      </select>
                     </div>
 
                     <div>

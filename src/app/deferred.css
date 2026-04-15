@@ -1,0 +1,50 @@
+/* Non-critical styles deferred to reduce render-blocking CSS on mobile. */
+
+:root {
+  --foreground: #1A365D;
+}
+
+/* Tắt Scroll Anchoring — ngăn browser tự điều chỉnh scroll position
+   khi thanh toolbar mobile hiện/ẩn, tránh giật 1 nhịp */
+html,
+body {
+  overflow-anchor: none;
+}
+
+/* Mobile: hint browser chuẩn bị tài nguyên scroll trước — ĐÚNG target là
+   html/body (scroll container), KHÔNG phải section (phá position:fixed) */
+@media (max-width: 768px) {
+  html {
+    will-change: scroll-position;
+  }
+}
+
+body {
+  color: var(--foreground);
+  min-height: 100dvh;
+  /* Tạo GPU layer riêng cho nền gradient — an toàn, không phá position:fixed */
+  will-change: contents;
+  background:
+    radial-gradient(ellipse at 15% 55%,  #E0E7FF 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 15%,  #FCE7F3 0%, transparent 55%),
+    radial-gradient(ellipse at 65% 80%,  #D1E9FF 0%, transparent 55%),
+    radial-gradient(ellipse at 38% 10%,  #F3E8FF 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 70%,  #FDE8F0 0%, transparent 50%),
+    #EEF2FF;
+  /* Mobile: scroll để tránh iOS Safari repaint toàn trang mỗi frame */
+  background-attachment: scroll;
+}
+
+/* Desktop (non-touch): dùng fixed để nền gradient parallax */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    background-attachment: fixed;
+  }
+}
+
+/* Fixed element optimization (only where applied). */
+.fixed-opt {
+  will-change: transform, bottom;
+  transition: bottom 0.3s ease-out;
+}
+

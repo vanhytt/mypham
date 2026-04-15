@@ -17,6 +17,7 @@ interface Product {
   id: number | string;
   ten_sp: string;
   gia: number;
+  giam_gia?: number | null;
   danh_muc?: string;
   anh_url: string;
   anh1?: string;
@@ -373,9 +374,22 @@ export default function ProductListClient() {
                     )}
                     <div className="flex-1" />
                     <div className="flex items-center justify-between pt-4 border-t border-[#A5C4E5]/30 mt-4">
-                      <span className="text-base font-semibold text-[#1A365D] tracking-tight shrink-0 mr-2">
-                        {Number(product.gia).toLocaleString('vi-VN')} đ
-                      </span>
+                      <div className="flex flex-col shrink-0 mr-2">
+                        {product.giam_gia != null ? (
+                          <>
+                            <span className="text-xs font-normal text-gray-400 line-through leading-none mb-0.5">
+                              {Number(product.gia).toLocaleString('vi-VN')} đ
+                            </span>
+                            <span className="text-base font-bold text-red-600 tracking-tight drop-shadow-[0_0_8px_rgba(220,38,38,0.25)]">
+                              {Number(product.giam_gia).toLocaleString('vi-VN')} đ
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-base font-semibold text-[#1A365D] tracking-tight">
+                            {Number(product.gia).toLocaleString('vi-VN')} đ
+                          </span>
+                        )}
+                      </div>
                       <button
                         onClick={() => setSelectedProduct(product)}
                         className="shrink-0 flex items-center gap-1.5 bg-[#A5C4E5] text-white text-xs uppercase tracking-widest px-4 py-2 rounded-full hover:bg-[#8BB8DC] transition-all duration-300 font-medium shadow-[0_0_15px_rgba(165,196,229,0.3)] group-hover:shadow-[0_0_20px_rgba(165,196,229,0.8)] active:scale-95 whitespace-nowrap"
@@ -569,8 +583,24 @@ export default function ProductListClient() {
                   <h2 className="font-serif text-2xl md:text-3xl text-[#1A365D] font-semibold mb-3">
                     {selectedProduct.ten_sp}
                   </h2>
-                  <div className="text-xl font-bold text-[#1A365D] mb-5 tracking-tight">
-                    {Number(selectedProduct.gia).toLocaleString('vi-VN')} đ
+                  <div className="mb-5">
+                    {selectedProduct.giam_gia != null ? (
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-2xl font-bold text-red-600 tracking-tight drop-shadow-[0_0_12px_rgba(220,38,38,0.3)]">
+                          {Number(selectedProduct.giam_gia).toLocaleString('vi-VN')} đ
+                        </span>
+                        <span className="text-sm font-normal text-gray-400 line-through leading-none mt-1">
+                          {Number(selectedProduct.gia).toLocaleString('vi-VN')} đ
+                        </span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-red-600 text-[10px] font-bold uppercase tracking-wider">
+                          Sale
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-xl font-bold text-[#1A365D] tracking-tight">
+                        {Number(selectedProduct.gia).toLocaleString('vi-VN')} đ
+                      </span>
+                    )}
                   </div>
                   {selectedProduct.mo_ta && (
                     <div className="mb-8">
