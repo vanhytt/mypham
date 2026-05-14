@@ -10,7 +10,7 @@ export default function Footer() {
           {[
             { name: "Facebook", link: "https://www.facebook.com/InsulaCushion/" },
             { name: "Shopee", link: "https://vn.shp.ee/t8GQdmGK" },
-            { name: "TikTok", link: "https://vt.tiktok.com/ZSH2U5CaT/?page=TikTokShop" }
+            { name: "TikTok", link: "https://www.tiktok.com/@insulacushion" }
           ].map((social) => (
             <a
               key={social.name}
